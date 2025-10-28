@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Smart Terrarium</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Smart Terrarium</h1>
+
+<form id="stateForm">
+    <label>Temperature:
+        <input type="range" min="10" max="40" step="0.5" id="tempSlider"/>
+        <span id="tempValue"></span> °C
+    </label><br/>
+    <label>Moisture:
+        <input type="range" min="0" max="100" step="1" id="moistureSlider"/>
+        <span id="moistureValue"></span> %
+    </label><br/>
+
+    <button type="button" onclick="cancel()">Cancel</button>
+    <button type="button" onclick="apply()">Apply</button>
+</form>
+
+<hr>
+
+<h2>Current Terrarium State</h2>
+<ul id="terrariumInfo">
+    <li><strong>ID:</strong> <span id="infoId">-</span></li>
+    <li><strong>Last Update:</strong> <span id="infoUpdate">-</span></li>
+    <li><strong>Temperature:</strong> <span id="infoTemp">-</span> °C</li>
+    <li><strong>Moisture:</strong> <span id="infoMoist">-</span> %</li>
+    <li><strong>Ventilation:</strong> <span id="infoVent">-</span></li>
+    <li><strong>Irradiation:</strong> <span id="infoIrrad">-</span></li>
+</ul>
+
+<script>
+    const tempSlider = document.getElementById("tempSlider");
+    const moistureSlider = document.getElementById("moistureSlider");
+    const tempValue = document.getElementById("tempValue");
+    const moistureValue = document.getElementById("moistureValue");
+
+    const infoId = document.getElementById("infoId");
+    const infoUpdate = document.getElementById("infoUpdate");
+    const infoTemp = document.getElementById("infoTemp");
+    const infoMoist = document.getElementById("infoMoist");
+    const infoVent = document.getElementById("infoVent");
+    const infoIrrad = document.getElementById("infoIrrad");
+
+    function fetchCurrentState() {
+        fetch('http://localhost:8081/terrarium_state/current')
+            //  fetch('/terrarium_state/current')
+            .then(res => res.json())
+            .then(data => {
+                // Set text fields
+                infoId.textContent = data.id;
+                infoUpdate.textContent = new Date(data.lastUpdate).toLocaleString();
+                infoTemp.textContent = data.temperature;
+                infoMoist.textContent = data.moisture;
+                infoVent.textContent = data.ventilation ? "ON" : "OFF";
+                infoIrrad.textContent = data.irradiation ? "ON" : "OFF";
+
+                // Set slider defaults
+                tempSlider.value = data.temperature;
+                moistureSlider.value = data.moisture;
+                tempValue.textContent = data.temperature;
+                moistureValue.textContent = data.moisture;
+            });
+    }
+
+    function cancel() {
+        fetchCurrentState(); // reset sliders
+    }
+
+    function apply() {
+        const data = {
+            temperature: parseFloat(tempSlider.value),
+            moisture: parseFloat(moistureSlider.value)
+        };
+
+        fetch('http://localhost:8081/setting', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+
+        }).then(res => {
+            if (res.ok) {
+                alert("State updated!");
+                fetchCurrentState();
+            } else {
+                alert("Update failed.");
+            }
+        });
+    }
+
+    tempSlider.oninput = () => tempValue.textContent = tempSlider.value;
+    moistureSlider.oninput = () => moistureValue.textContent = moistureSlider.value;
+
+    // Load on page load
+    fetchCurrentState();
+</script>
+
+</body>
+</html>
+
