@@ -20,8 +20,9 @@ public class UserController {
     }
 
     @PostMapping("/createDefaultUser")
-    public ResponseEntity<User> createDefaultUser () {
-        User user = userService.createDefaultUser();
+    public ResponseEntity<User> createDefaultUser (@RequestBody com.example.smartTerrarium.dto.CreateUserDto userDto) {
+        // Create default user using provided credentials (name/email/password)
+        User user = userService.registerUser(userDto);
         return ResponseEntity.ok(user);
     }
 
@@ -31,9 +32,10 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/login")
-//    public ResponseEntity<User> login(@RequestBody UserLoginData loginData) {
-//        return ResponseEntity.ok(userService.login(loginData));
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserLoginData loginData) {
+        String token = userService.login(loginData);
+        return ResponseEntity.ok(token);
+    }
 
 }
