@@ -25,12 +25,15 @@ public class Setting {
     private double moisture;
     @Column(name = "water_over_week")
     private double waterOverWeek;
+    @Column(name = "watering_days")
     private String wateringDays;
+    @Column(name = "watering_method")
     private String wateringMethod;
     @Column(name = "irradiation_start")
     private LocalTime lightStart;
     @Column(name = "irradiation_stop")
     private LocalTime lightStop;
+    @Column(name = "light_volume")
     private double lightVolume;
     @Column(name = "is_custom")
     private boolean isCustom;
