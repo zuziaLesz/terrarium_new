@@ -27,5 +27,4 @@ public class TerrariumDataController {
             terrariumStateService.addNewTerrariumState(terrariumData);
             return ResponseEntity.noContent().build();
     }
-    public
 }
