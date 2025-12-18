@@ -5,8 +5,11 @@ import com.example.smartTerrarium.dto.UserLoginData;
 import com.example.smartTerrarium.entity.User;
 import com.example.smartTerrarium.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -48,5 +51,14 @@ public class UserService {
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    public User getCurrentUser() {
+        return (User) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
     }
 }

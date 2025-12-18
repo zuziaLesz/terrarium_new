@@ -1,6 +1,5 @@
 package com.example.smartTerrarium.controller;
 
-import com.example.smartTerrarium.dto.SendTerrariumCommandDto;
 import com.example.smartTerrarium.dto.TerrariumDataDto;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.service.TerrariumDataService;
@@ -29,17 +28,6 @@ public class TerrariumDataController {
             TerrariumData terrariumData = terrariumDataService.saveTerrariumData(terrariumDataDto);
             terrariumStateService.addNewTerrariumState(terrariumData);
             return ResponseEntity.noContent().build();
-    }
-    @PostMapping("/ventilation")
-    public ResponseEntity<SendTerrariumCommandDto> sendVentilationCommand() throws IOException {
-        double moisture = terrariumStateService.getCurrentTerrariumStateAndMapToDto().getMoisture();
-        return ResponseEntity.ok(ventilationService.sendVentilationCommand(moisture));
-    }
-
-    @PostMapping("/humidifier")
-    public ResponseEntity<SendTerrariumCommandDto> sendHumidifierCommand() throws IOException {
-        double moisture = terrariumStateService.getCurrentTerrariumStateAndMapToDto().getMoisture();
-        return ResponseEntity.ok(ventilationService.sendHumidifierCommand(moisture));
     }
 
 }

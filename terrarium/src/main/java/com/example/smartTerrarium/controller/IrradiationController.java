@@ -1,6 +1,5 @@
 package com.example.smartTerrarium.controller;
 
-import com.example.smartTerrarium.dto.SendTerrariumCommandDto;
 import com.example.smartTerrarium.service.IrradiationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,4 @@ public class IrradiationController {
     @Autowired
     private final IrradiationService irradiationService;
 
-    @PostMapping("/lights")
-    public ResponseEntity<SendTerrariumCommandDto> turnLightsOn() throws IOException {
-        return ResponseEntity.ok(irradiationService.turnIrradiationOnOff());
-    }
 }
