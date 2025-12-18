@@ -2,6 +2,7 @@ package com.example.smartTerrarium.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Setter
@@ -11,7 +12,7 @@ import java.util.Date;
 @Builder
 public class TerrariumStateDto {
     private Integer id;
-    private Date lastUpdate;
+    private LocalDateTime lastUpdate;
     private double temperature;
     private double moisture;
     private boolean ventilation;

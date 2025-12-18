@@ -1,6 +1,7 @@
 package com.example.smartTerrarium.controller;
 
 import com.example.smartTerrarium.dto.TerrariumDataDto;
+import com.example.smartTerrarium.dto.TerrariumDataSendDto;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.service.TerrariumDataService;
 import com.example.smartTerrarium.service.TerrariumStateService;
@@ -11,20 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("terrarium")
+@RequestMapping("/terrarium")
 public class TerrariumDataController {
     @Autowired
     private final TerrariumDataService terrariumDataService;
     private final TerrariumStateService terrariumStateService;
     private final VentilationService ventilationService;
 
-    @GetMapping("/dataTerrarium")
-    public ResponseEntity<Void> getTemperatureFromTerrarium(@RequestBody TerrariumDataDto terrariumDataDto) {
-            TerrariumData terrariumData = terrariumDataService.saveTerrariumData(terrariumDataDto);
-            terrariumStateService.addNewTerrariumState(terrariumData);
-            return ResponseEntity.noContent().build();
+    @PostMapping("/dataTerrarium")
+    public List<TerrariumData> getTemperatureFromTerrarium(@RequestBody List<TerrariumDataDto> terrariumDataDto) {
+            return (terrariumDataService.saveTerrariumData(terrariumDataDto));
+            //terrariumStateService.addNewTerrariumState(terrariumData);
+    }
+    @PostMapping("/sendData")
+    public void sendSetting(@RequestBody TerrariumDataSendDto terrariumDataSendDto) {
+        terrariumDataService.sendTerariumData(terrariumDataSendDto);
     }
 }

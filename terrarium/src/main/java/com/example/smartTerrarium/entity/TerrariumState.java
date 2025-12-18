@@ -3,6 +3,7 @@ package com.example.smartTerrarium.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -17,7 +18,7 @@ public class TerrariumState {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "last_update")
-    private Date lastUpdate;
+    private LocalDateTime lastUpdate;
     private double temperature;
     private double moisture;
     private boolean ventilation;
