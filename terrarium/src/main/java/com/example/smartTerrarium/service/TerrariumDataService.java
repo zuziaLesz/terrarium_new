@@ -23,7 +23,8 @@ public class TerrariumDataService {
         TerrariumData terrariumData = TerrariumData.builder()
                 .temperature(terrariumDataDto.getTemperature())
                 .moisture(terrariumDataDto.getMoisture())
-                .lastUpdate(new Date())
+                .brightness(terrariumDataDto.getBrightness())
+                .lastUpdate(terrariumDataDto.getTimestamp())
                 .build();
         return terrariumDataRepository.save(terrariumData);
     }
