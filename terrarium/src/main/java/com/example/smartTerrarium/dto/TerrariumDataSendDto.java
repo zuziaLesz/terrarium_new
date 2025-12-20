@@ -2,7 +2,6 @@ package com.example.smartTerrarium.dto;
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 

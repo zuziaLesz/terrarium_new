@@ -5,7 +5,6 @@ import com.example.smartTerrarium.dto.TerrariumDataSendDto;
 import com.example.smartTerrarium.entity.Setting;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.repository.TerrariumDataRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

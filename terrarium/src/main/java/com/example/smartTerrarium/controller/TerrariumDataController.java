@@ -4,14 +4,10 @@ import com.example.smartTerrarium.dto.TerrariumDataDto;
 import com.example.smartTerrarium.dto.TerrariumDataSendDto;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.service.TerrariumDataService;
-import com.example.smartTerrarium.service.TerrariumStateService;
-import com.example.smartTerrarium.service.VentilationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
