@@ -23,11 +23,13 @@ import java.util.stream.Collectors;
 public class SettingService {
     private SettingRepository settingRepository;
     private UserService userService;
+    private TerrariumDataService terrariumDataService;
 
     @Autowired
-    public SettingService(SettingRepository settingRepository, UserService userService) {
+    public SettingService(SettingRepository settingRepository, UserService userService, TerrariumDataService terrariumDataService) {
         this.settingRepository = settingRepository;
         this.userService = userService;
+        this.terrariumDataService = terrariumDataService;
     }
     public void createSetting(CreateSettingDto createSettingDto) {
         Setting setting = buildSettingFromCreateSetting(createSettingDto);
@@ -103,6 +105,7 @@ public class SettingService {
     public TerrariumDataDto applySetting(Integer id) {
         changeCurrentSetting(id);
         Setting setting = getCurrentSetting();
+        terrariumDataService.sendTerariumData(terrariumDataService.mapSettingToTerrariumDataSend(setting));
         return TerrariumDataDto.builder()
                 .temperature(setting.getTemperature())
                 .moisture(setting.getMoisture())
@@ -184,7 +187,7 @@ public class SettingService {
                 .collect(Collectors.joining(","));
     }
 
-    private List<String> mapWateringDaysToList(String listOfDays) {
+    public List<String> mapWateringDaysToList(String listOfDays) {
         return Arrays.stream(listOfDays.split(","))
                 .collect(Collectors.toList());
     }

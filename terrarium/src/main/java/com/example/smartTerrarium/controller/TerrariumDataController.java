@@ -20,13 +20,10 @@ import java.util.List;
 public class TerrariumDataController {
     @Autowired
     private final TerrariumDataService terrariumDataService;
-    private final TerrariumStateService terrariumStateService;
-    private final VentilationService ventilationService;
 
     @PostMapping("/dataTerrarium")
     public List<TerrariumData> getTemperatureFromTerrarium(@RequestBody List<TerrariumDataDto> terrariumDataDto) {
             return (terrariumDataService.saveTerrariumData(terrariumDataDto));
-            //terrariumStateService.addNewTerrariumState(terrariumData);
     }
     @PostMapping("/sendData")
     public void sendSetting(@RequestBody TerrariumDataSendDto terrariumDataSendDto) {

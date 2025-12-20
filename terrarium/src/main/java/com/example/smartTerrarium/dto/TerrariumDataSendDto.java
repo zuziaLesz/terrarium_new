@@ -1,9 +1,12 @@
 package com.example.smartTerrarium.dto;
 
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+@Builder
 public class TerrariumDataSendDto {
     private String setting_id;
     private String plant_name;
