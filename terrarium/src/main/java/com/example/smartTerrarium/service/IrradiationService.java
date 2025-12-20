@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalTime;
 
 @Service
@@ -14,7 +13,6 @@ import java.time.LocalTime;
 public class IrradiationService {
     @Autowired
     private final SettingRepository settingRepository;
-    private final TerrariumStateService terrariumStateService;
     private final UserService userService;
 
     private Setting getCurrentSetting() {

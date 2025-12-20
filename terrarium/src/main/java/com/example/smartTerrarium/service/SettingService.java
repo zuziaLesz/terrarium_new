@@ -175,10 +175,7 @@ public class SettingService {
     private boolean doesCurrentSettingExist() {
         int currentUserId = userService.getCurrentUser().getId();
         Optional<Setting> currentSetting = settingRepository.findCurrentlyUsed(currentUserId);
-        if(currentSetting.isPresent()){
-            return true;
-        }
-        else return false;
+        return currentSetting.isPresent();
     }
 
     private String mapWateringDaysToString(List<String> listOfDays) {
