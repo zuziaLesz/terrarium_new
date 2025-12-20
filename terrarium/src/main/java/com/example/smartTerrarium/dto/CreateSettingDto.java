@@ -14,12 +14,12 @@ import java.util.List;
 public class CreateSettingDto {
     private String name;
     private String description;
-    private double temperature;
-    private double moisture;
-    private double waterOverWeek;
+    private Double temperature;
+    private Double moisture;
+    private Double waterOverWeek;
     private LocalTime lightStart;
     private LocalTime lightStop;
     private String wateringMethod;
-    private double lightVolume;
+    private Double lightVolume;
     List<String> wateringDays;
 }

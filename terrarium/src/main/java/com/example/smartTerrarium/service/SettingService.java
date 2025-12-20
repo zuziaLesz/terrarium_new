@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 @Service
 public class SettingService {
     private SettingRepository settingRepository;
+    private UserService userService;
 
     @Autowired
-    public SettingService(SettingRepository settingRepository) {
+    public SettingService(SettingRepository settingRepository, UserService userService) {
         this.settingRepository = settingRepository;
+        this.userService = userService;
     }
     public void createSetting(CreateSettingDto createSettingDto) {
         Setting setting = buildSettingFromCreateSetting(createSettingDto);
@@ -38,23 +40,44 @@ public class SettingService {
         if(!setting.isCustom()) {
             throw new SettingIsNotCustomException("You cannot edit setting you did not make");
         }
-        setting.setName(createSettingDto.getName());
-        setting.setDescription(createSettingDto.getDescription());
-        setting.setTemperature(createSettingDto.getTemperature());
-        setting.setMoisture(createSettingDto.getMoisture());
-        setting.setWaterOverWeek(createSettingDto.getWaterOverWeek());
-        setting.setLightStart(createSettingDto.getLightStart());
-        setting.setLightStart(createSettingDto.getLightStop());
-        setting.setWateringMethod(createSettingDto.getWateringMethod());
-        setting.setLightVolume(createSettingDto.getLightVolume());
+        if(createSettingDto.getName() != null && !createSettingDto.getName().isEmpty()) {
+            setting.setName(createSettingDto.getName());
+        }
+        if(createSettingDto.getDescription() != null && !createSettingDto.getDescription().isEmpty()) {
+            setting.setDescription(createSettingDto.getDescription());
+        }
+        if(createSettingDto.getTemperature() != null) {
+            setting.setTemperature(createSettingDto.getTemperature());
+        }
+        if(createSettingDto.getMoisture() != null) {
+            setting.setMoisture(createSettingDto.getMoisture());
+        }
+        if(createSettingDto.getWaterOverWeek() != null) {
+            setting.setWaterOverWeek(createSettingDto.getWaterOverWeek());
+        }
+        if(createSettingDto.getLightStart() != null) {
+            setting.setLightStart(createSettingDto.getLightStart());
+        }
+        if(createSettingDto.getLightStop() != null) {
+            setting.setLightStart(createSettingDto.getLightStop());
+        }
+        if(createSettingDto.getWateringMethod() != null && !createSettingDto.getWateringMethod().isEmpty()) {
+            setting.setWateringMethod(createSettingDto.getWateringMethod());
+        }
+        if(createSettingDto.getLightVolume() != null) {
+            setting.setLightVolume(createSettingDto.getLightVolume());
+        }
         setting.setLastUpdated(new Date());
-        setting.setUserId(1);  //add a user when user service is done
-        setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
+        setting.setUserId(userService.getCurrentUser().getId());
+        if(createSettingDto.getWateringDays() != null && !createSettingDto.getWateringDays().isEmpty()) {
+            setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
+        }
         settingRepository.save(setting);
     }
 
     public List<GetSettingDto> getAllSettings() {
-        List<Setting> settingList = settingRepository.findAll();
+        int userId = userService.getCurrentUser().getId();
+        List<Setting> settingList = settingRepository.findAllByUserId(userId);
         return settingList.stream()
                 .map(this::mapSettingToDto)
                 .collect(Collectors.toList());
@@ -110,7 +133,7 @@ public class SettingService {
                 .isCustom(true)
                 .lastUpdated(new Date())
                 .isCurrentlyUsed(false)
-                .userId(1)  //add user when user service is done
+                .userId(userService.getCurrentUser().getId())
                 .build();
         setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
         return setting;
@@ -122,7 +145,8 @@ public class SettingService {
 
     }
     public Setting getCurrentSetting() {
-        return settingRepository.findCurrentlyUsed().orElseThrow(NoCurrentSettingException::new);
+        int currentUserId = userService.getCurrentUser().getId();
+        return settingRepository.findCurrentlyUsed(currentUserId).orElseThrow(NoCurrentSettingException::new);
     }
 
 
@@ -149,7 +173,8 @@ public class SettingService {
     }
 
     private boolean doesCurrentSettingExist() {
-        Optional<Setting> currentSetting = settingRepository.findCurrentlyUsed();
+        int currentUserId = userService.getCurrentUser().getId();
+        Optional<Setting> currentSetting = settingRepository.findCurrentlyUsed(currentUserId);
         if(currentSetting.isPresent()){
             return true;
         }
@@ -164,7 +189,6 @@ public class SettingService {
 
     private List<String> mapWateringDaysToList(String listOfDays) {
         return Arrays.stream(listOfDays.split(","))
-                .map(String::toLowerCase)
                 .collect(Collectors.toList());
     }
 }

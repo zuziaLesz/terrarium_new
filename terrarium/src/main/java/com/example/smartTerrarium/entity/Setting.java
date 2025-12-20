@@ -20,10 +20,10 @@ public class Setting {
     private Integer id;
     private String name;
     private String description;
-    private double temperature;
-    private double moisture;
+    private Double temperature;
+    private Double moisture;
     @Column(name = "water_over_week")
-    private double waterOverWeek;
+    private Double waterOverWeek;
     @Column(name = "watering_days")
     private String wateringDays;
     @Column(name = "watering_method")
@@ -33,7 +33,7 @@ public class Setting {
     @Column(name = "irradiation_stop")
     private LocalTime lightStop;
     @Column(name = "light_volume")
-    private double lightVolume;
+    private Double lightVolume;
     @Column(name = "is_custom")
     private boolean isCustom;
     @Column(name = "last_updated")

@@ -15,9 +15,11 @@ public class IrradiationService {
     @Autowired
     private final SettingRepository settingRepository;
     private final TerrariumStateService terrariumStateService;
+    private final UserService userService;
 
     private Setting getCurrentSetting() {
-        return settingRepository.findCurrentlyUsed().orElseThrow(() -> new RuntimeException("No currently used setting"));
+        int currentUser = userService.getCurrentUser().getId();
+        return settingRepository.findCurrentlyUsed(currentUser).orElseThrow(() -> new RuntimeException("No currently used setting"));
     }
 
     private LocalTime getStartIrradiationTime() {
