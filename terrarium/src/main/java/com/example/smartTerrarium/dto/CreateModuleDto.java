@@ -1,6 +1,5 @@
 package com.example.smartTerrarium.dto;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 
 @Getter
