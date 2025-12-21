@@ -42,4 +42,7 @@ public class Setting {
     private boolean isCurrentlyUsed;
     @Column(name = "user_id")
     private int userId;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB", name = "photo")
+    private byte[] image;
 }

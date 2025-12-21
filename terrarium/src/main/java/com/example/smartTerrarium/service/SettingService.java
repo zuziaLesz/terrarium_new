@@ -11,7 +11,9 @@ import com.example.smartTerrarium.repository.SettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +33,8 @@ public class SettingService {
         this.userService = userService;
         this.terrariumDataService = terrariumDataService;
     }
-    public void createSetting(CreateSettingDto createSettingDto) {
-        Setting setting = buildSettingFromCreateSetting(createSettingDto);
+    public void createSetting(CreateSettingDto createSettingDto, MultipartFile image) throws IOException {
+        Setting setting = buildSettingFromCreateSetting(createSettingDto, image);
         settingRepository.save(setting);
         changeCurrentSetting(setting.getId());
     }
@@ -75,6 +77,16 @@ public class SettingService {
             setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
         }
         settingRepository.save(setting);
+    }
+
+    public void editImage(MultipartFile image, Integer settingId) throws IOException {
+        Setting setting = getSettingById(settingId);
+        if(!setting.isCustom()) {
+            throw new SettingIsNotCustomException("You cannot edit setting you did not make");
+        }
+        else {
+            setting.setImage(image.getBytes());
+        }
     }
 
     public List<GetSettingDto> getAllSettings() {
@@ -122,7 +134,7 @@ public class SettingService {
         setting.setCurrentlyUsed(true);
         settingRepository.save(setting);
     }
-    private Setting buildSettingFromCreateSetting(CreateSettingDto createSettingDto) {
+    private Setting buildSettingFromCreateSetting(CreateSettingDto createSettingDto, MultipartFile image) throws IOException {
         Setting setting = Setting.builder()
                 .name(createSettingDto.getName())
                 .description(createSettingDto.getDescription())
@@ -139,6 +151,7 @@ public class SettingService {
                 .userId(userService.getCurrentUser().getId())
                 .build();
         setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
+        setting.setImage(image.getBytes());
         return setting;
     }
 
