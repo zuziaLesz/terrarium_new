@@ -33,8 +33,8 @@ public class SettingService {
         this.userService = userService;
         this.terrariumDataService = terrariumDataService;
     }
-    public void createSetting(CreateSettingDto createSettingDto, MultipartFile image) throws IOException {
-        Setting setting = buildSettingFromCreateSetting(createSettingDto, image);
+    public void createSetting(CreateSettingDto createSettingDto){
+        Setting setting = buildSettingFromCreateSetting(createSettingDto);
         settingRepository.save(setting);
         changeCurrentSetting(setting.getId());
     }
@@ -134,7 +134,7 @@ public class SettingService {
         setting.setCurrentlyUsed(true);
         settingRepository.save(setting);
     }
-    private Setting buildSettingFromCreateSetting(CreateSettingDto createSettingDto, MultipartFile image) throws IOException {
+    private Setting buildSettingFromCreateSetting(CreateSettingDto createSettingDto){
         Setting setting = Setting.builder()
                 .name(createSettingDto.getName())
                 .description(createSettingDto.getDescription())
@@ -151,7 +151,6 @@ public class SettingService {
                 .userId(userService.getCurrentUser().getId())
                 .build();
         setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
-        setting.setImage(image.getBytes());
         return setting;
     }
 

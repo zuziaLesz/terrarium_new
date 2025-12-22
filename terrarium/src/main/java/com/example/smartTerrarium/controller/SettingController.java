@@ -21,8 +21,8 @@ public class SettingController {
     }
 
     @PostMapping("/setting")
-    public ResponseEntity<Void> createSetting(@RequestBody CreateSettingDto createSettingDto, @RequestParam("file") MultipartFile file) throws IOException {
-        settingService.createSetting(createSettingDto, file);
+    public ResponseEntity<Void> createSetting(@RequestBody CreateSettingDto createSettingDto) {
+        settingService.createSetting(createSettingDto);
         return ResponseEntity.noContent().build();
     }
 
