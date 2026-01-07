@@ -2,6 +2,7 @@ package com.example.smartTerrarium.controller;
 
 import com.example.smartTerrarium.dto.CreateUserDto;
 import com.example.smartTerrarium.dto.UserLoginData;
+import com.example.smartTerrarium.dto.UserSendData;
 import com.example.smartTerrarium.entity.User;
 import com.example.smartTerrarium.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -35,9 +37,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginData loginData) {
-        String token = userService.login(loginData);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<UserSendData> login(@RequestBody UserLoginData loginData) {
+        return ResponseEntity.ok(userService.login(loginData));
     }
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {

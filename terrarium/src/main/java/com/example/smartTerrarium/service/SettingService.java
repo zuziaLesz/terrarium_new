@@ -87,6 +87,7 @@ public class SettingService {
         else {
             setting.setImage(image.getBytes());
         }
+        settingRepository.save(setting);
     }
 
     public List<GetSettingDto> getAllSettings() {

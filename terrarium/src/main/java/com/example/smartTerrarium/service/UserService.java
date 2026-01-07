@@ -2,6 +2,7 @@ package com.example.smartTerrarium.service;
 
 import com.example.smartTerrarium.dto.CreateUserDto;
 import com.example.smartTerrarium.dto.UserLoginData;
+import com.example.smartTerrarium.dto.UserSendData;
 import com.example.smartTerrarium.entity.User;
 import com.example.smartTerrarium.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +41,16 @@ public class UserService {
      * Authenticate user and return a JWT token if credentials are valid.
      * @return JWT token string
      */
-    public String login(UserLoginData loginData) {
+    public UserSendData login(UserLoginData loginData) {
         User user = getUserByEmail(loginData.getEmail());
         if(passwordEncoder.matches(loginData.getPassword(), user.getPassword())) {
-            return jwtService.generateToken(user.getEmail());
+           String token = jwtService.generateToken(user.getEmail());
+           return UserSendData.builder()
+                   .email(user.getEmail())
+                   .name(user.getName())
+                   .password(user.getPassword())
+                   .token(token)
+                   .build();
         }
         else throw new RuntimeException("Invalid credentials");
     }
