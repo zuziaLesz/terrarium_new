@@ -18,4 +18,5 @@ public class TerrariumStateController {
     public ResponseEntity<DashboardDto> getCurrentTerrariumState() {
         return ResponseEntity.ok(terrariumStateService.getCurrentTerrariumStateAndMapToDto());
     }
+
 }
