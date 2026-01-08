@@ -21,11 +21,13 @@ public class TerrariumDataService {
 
     private TerrariumDataRepository terrariumDataRepository;
     private final WebClient webClient;
+    private final UserService userService;
 
     @Autowired
-    public TerrariumDataService(TerrariumDataRepository terrariumDataRepository, WebClient webClient) {
+    public TerrariumDataService(TerrariumDataRepository terrariumDataRepository, WebClient webClient, UserService userService) {
         this.terrariumDataRepository = terrariumDataRepository;
         this.webClient = webClient;
+        this.userService = userService;
     }
     public List<TerrariumData> saveTerrariumData (List<TerrariumDataDto> terrariumDataDto) {
         List<TerrariumData> terrariumDataList = terrariumDataDto.stream()
@@ -34,6 +36,7 @@ public class TerrariumDataService {
                         .moisture(dto.getMoisture())
                         .brightness(dto.getBrightness())
                         .lastUpdate(dto.getTimestamp())
+                        .userId(userService.getCurrentUser().getId())
                         .build()
                 )
                 .toList();

@@ -29,7 +29,8 @@ public class TerrariumStateService {
     }
 
     public TerrariumData getCurrentTerrariumState() {
-        return terrariumDataRepository.findMostRecent().orElseThrow(NoTerrariumStateException::new);
+        Integer userId = settingService.getCurrentSetting().getUserId();
+        return terrariumDataRepository.findMostRecent(userId).orElseThrow(NoTerrariumStateException::new);
     }
 
     private DashboardDto mapTerrariumDataToDto(TerrariumData terrariumData) {

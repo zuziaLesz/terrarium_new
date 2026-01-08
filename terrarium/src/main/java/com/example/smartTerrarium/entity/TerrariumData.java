@@ -24,4 +24,6 @@ public class TerrariumData {
     private double temperature;
     private double moisture;
     private double brightness;
+    @Column(name="user_id")
+    private Integer userId;
 }
