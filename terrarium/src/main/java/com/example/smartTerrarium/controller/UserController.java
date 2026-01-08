@@ -1,6 +1,7 @@
 package com.example.smartTerrarium.controller;
 
 import com.example.smartTerrarium.dto.CreateUserDto;
+import com.example.smartTerrarium.dto.UserEditDto;
 import com.example.smartTerrarium.dto.UserLoginData;
 import com.example.smartTerrarium.dto.UserSendData;
 import com.example.smartTerrarium.entity.User;
@@ -39,6 +40,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserSendData> login(@RequestBody UserLoginData loginData) {
         return ResponseEntity.ok(userService.login(loginData));
+    }
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<UserEditDto> editUser(@RequestBody UserEditDto userDto, @PathVariable Integer id) {
+        return ResponseEntity.ok(userService.editUser(userDto, id));
     }
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {

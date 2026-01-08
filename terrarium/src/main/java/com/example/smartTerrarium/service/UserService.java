@@ -1,6 +1,7 @@
 package com.example.smartTerrarium.service;
 
 import com.example.smartTerrarium.dto.CreateUserDto;
+import com.example.smartTerrarium.dto.UserEditDto;
 import com.example.smartTerrarium.dto.UserLoginData;
 import com.example.smartTerrarium.dto.UserSendData;
 import com.example.smartTerrarium.entity.User;
@@ -48,7 +49,6 @@ public class UserService {
            return UserSendData.builder()
                    .email(user.getEmail())
                    .name(user.getName())
-                   .password(user.getPassword())
                    .token(token)
                    .build();
         }
@@ -67,5 +67,18 @@ public class UserService {
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
+    }
+    public UserEditDto editUser(UserEditDto userEditDto, Integer id) {
+        User user = userRepository.getUserById(id);
+        if(userEditDto.getEmail() != null) {
+            user.setEmail(userEditDto.getEmail());
+        }
+        else userEditDto.setEmail(user.getEmail());
+        if(userEditDto.getName() != null) {
+            user.setName(userEditDto.getName());
+        }
+        else userEditDto.setName(user.getName());
+        userRepository.save(user);
+        return userEditDto;
     }
 }
