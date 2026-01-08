@@ -1,7 +1,6 @@
 package com.example.smartTerrarium.service;
 
 import com.example.smartTerrarium.dto.DashboardDto;
-import com.example.smartTerrarium.dto.TerrariumStateDto;
 import com.example.smartTerrarium.entity.Setting;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.entity.TerrariumState;
@@ -17,14 +16,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class TerrariumStateService {
 
     @Autowired
-    private final TerrariumStateRepository terrariumStateRepository;
     private final TerrariumDataRepository terrariumDataRepository;
     private final SettingService settingService;
 
@@ -34,12 +31,7 @@ public class TerrariumStateService {
     }
 
     public TerrariumData getCurrentTerrariumState() {
-        return terrariumStateRepository.findMostRecent().orElseThrow(() -> new NoTerrariumStateException());
-    }
-
-
-    public void save(TerrariumState terrariumState) {
-        terrariumStateRepository.save(terrariumState);
+        return terrariumDataRepository.findMostRecent().orElseThrow(NoTerrariumStateException::new);
     }
 
     private DashboardDto mapTerrariumDataToDto(TerrariumData terrariumData) {

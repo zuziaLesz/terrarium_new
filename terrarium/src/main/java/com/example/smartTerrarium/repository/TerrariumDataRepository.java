@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface TerrariumDataRepository extends JpaRepository<TerrariumData, Integer> {
     @Query(value = "SELECT * FROM terrarium_data ORDER BY last_update DESC LIMIT 1", nativeQuery = true)
-    Optional<TerrariumState> findMostRecent();
+    Optional<TerrariumData> findMostRecent();
 }
