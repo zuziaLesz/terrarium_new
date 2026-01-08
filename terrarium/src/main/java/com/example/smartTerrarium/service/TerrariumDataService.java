@@ -45,7 +45,7 @@ public class TerrariumDataService {
     }
     public void sendTerariumData(TerrariumDataSendDto data) {
             webClient.post()
-                    .uri("http://172.19.240.152:5000/current-setting")
+                    .uri("https://leafcore.eu/current-setting")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(data)
                     .retrieve()

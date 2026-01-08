@@ -1,10 +1,14 @@
 package com.example.smartTerrarium.dto;
 
-import lombok.Builder;
+import lombok.*;
 
 import java.time.LocalTime;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 @Builder
 public class TerrariumDataSendDto {
     private String setting_id;
