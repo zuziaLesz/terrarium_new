@@ -1,6 +1,5 @@
 package com.example.smartTerrarium.repository;
 
-import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.entity.TerrariumState;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
