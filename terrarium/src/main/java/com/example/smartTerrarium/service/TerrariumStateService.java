@@ -1,14 +1,21 @@
 package com.example.smartTerrarium.service;
 
+import com.example.smartTerrarium.dto.DashboardDto;
 import com.example.smartTerrarium.dto.TerrariumStateDto;
+import com.example.smartTerrarium.entity.Setting;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.entity.TerrariumState;
 import com.example.smartTerrarium.exception.NoTerrariumStateException;
+import com.example.smartTerrarium.repository.TerrariumDataRepository;
 import com.example.smartTerrarium.repository.TerrariumStateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,73 +25,70 @@ public class TerrariumStateService {
 
     @Autowired
     private final TerrariumStateRepository terrariumStateRepository;
+    private final TerrariumDataRepository terrariumDataRepository;
+    private final SettingService settingService;
 
-    public void addNewTerrariumState(TerrariumData terrariumData) {
-        boolean irradiation;
-        boolean ventilation;
-        if(terrariumStateRepository.findMostRecent().isEmpty()) {
-            irradiation = false;
-            ventilation = false;
-        }
-        else {
-            irradiation = getCurrentTerrariumState().isLight();
-            ventilation = getCurrentTerrariumState().isVentilation();
-        }
-        TerrariumState terrariumState =TerrariumState.builder()
-                .temperature(terrariumData.getTemperature())
-                .moisture(terrariumData.getMoisture())
-                .light(irradiation) //add irradiation when irradiation service works
-                .ventilation(ventilation) //add ventilation when scheduled
-                .lastUpdate(terrariumData.getLastUpdate())
-                .build();
-        terrariumStateRepository.save(terrariumState);
+    public DashboardDto getCurrentTerrariumStateAndMapToDto() {
+        TerrariumData terrariumData = getCurrentTerrariumState();
+        return mapTerrariumDataToDto(terrariumData);
     }
 
-    public TerrariumStateDto getCurrentTerrariumStateAndMapToDto() {
-        TerrariumState terrariumState = getCurrentTerrariumState();
-        return mapTerrariumStateToDto(terrariumState);
-    }
-
-    public TerrariumState getCurrentTerrariumState() {
+    public TerrariumData getCurrentTerrariumState() {
         return terrariumStateRepository.findMostRecent().orElseThrow(() -> new NoTerrariumStateException());
     }
 
-    public List<TerrariumStateDto> getAllTerrariumStates() {
-        return terrariumStateRepository.findAll().stream()
-                .map(this::mapTerrariumStateToDto)
-                .collect(Collectors.toList());
-    }
-
-    public void changeIrradiation(boolean light) {
-        TerrariumState currentState = getCurrentTerrariumState();
-        currentState.setLight(light);
-        terrariumStateRepository.save(currentState);
-    }
-
-    public void changeVentilation(boolean ventilation) {
-        TerrariumState currentState = getCurrentTerrariumState();
-        currentState.setVentilation(ventilation);
-        terrariumStateRepository.save(currentState);
-    }
-
-    public void changeHeating(boolean heating) {
-        TerrariumState currentState = getCurrentTerrariumState();
-        currentState.setHeating(heating);
-        terrariumStateRepository.save(currentState);
-    }
 
     public void save(TerrariumState terrariumState) {
         terrariumStateRepository.save(terrariumState);
     }
 
-    private TerrariumStateDto mapTerrariumStateToDto(TerrariumState terrariumState) {
-        return TerrariumStateDto.builder()
-                .id(terrariumState.getId())
-                .lastUpdate(terrariumState.getLastUpdate())
-                .temperature(terrariumState.getTemperature())
-                .moisture(terrariumState.getMoisture())
-                .ventilation(terrariumState.isVentilation())
-                .irradiation(terrariumState.isLight())
+    private DashboardDto mapTerrariumDataToDto(TerrariumData terrariumData) {
+        Setting currentSetting = settingService.getCurrentSetting();
+        return DashboardDto.builder()
+                .temperature(terrariumData.getTemperature())
+                .humidity(terrariumData.getMoisture())
+                .brightness(terrariumData.getBrightness())
+                .name(currentSetting.getName())
+                .description(currentSetting.getDescription())
+                .lightStart(currentSetting.getLightStart())
+                .lightEnd(currentSetting.getLightStop())
+                .timeUntilWatering(checkTimeUntilWatering())
                 .build();
+    }
+    private Timestamp checkTimeUntilWatering() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
+        Setting currentSetting = settingService.getCurrentSetting();
+        List<DayOfWeek> wateringDays = settingService.mapWateringDaysToList(currentSetting.getWateringDays())
+                .stream()
+                .map(String::toUpperCase)
+                .map(DayOfWeek::valueOf)
+                .toList();
+        int hour = 6;
+        int minute = 0;
+
+        LocalDateTime nextWatering = null;
+
+        for (DayOfWeek day : wateringDays) {
+
+            int diff = day.getValue() - today.getDayOfWeek().getValue();
+            if (diff < 0) diff += 7;
+
+            LocalDate targetDate = today.plusDays(diff);
+            LocalDateTime candidate =
+                    targetDate.atTime(hour, minute);
+
+            // Same day but time already passed → next week
+            if (candidate.isBefore(now)) {
+                candidate = candidate.plusWeeks(1);
+            }
+
+            if (nextWatering == null || candidate.isBefore(nextWatering)) {
+                nextWatering = candidate;
+            }
+        }
+
+        // Convert to Timestamp (absolute moment)
+        return Timestamp.valueOf(nextWatering);
     }
 }
