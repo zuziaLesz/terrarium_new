@@ -1,11 +1,12 @@
 package com.example.smartTerrarium.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class HistoryDto {
-    private Map<Double, LocalDateTime> temperature;
-    private Map<Double, LocalDateTime> humidity;
-    private Map<Double, LocalDateTime> brightness;
-    private Map<Double, LocalDateTime> water;
+    private String timezone;
+    private HistoryRangeDto range;
+    private List<String> indexes;
+    private Map<String, List<Double>> series;
 }

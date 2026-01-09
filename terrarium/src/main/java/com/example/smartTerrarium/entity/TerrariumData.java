@@ -25,4 +25,6 @@ public class TerrariumData {
     private double brightness;
     @Column(name="user_id")
     private Integer userId;
+    @Column(name="plant_id")
+    private Integer plantId;
 }

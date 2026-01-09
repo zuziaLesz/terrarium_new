@@ -3,6 +3,7 @@ package com.example.smartTerrarium.service;
 import com.example.smartTerrarium.dto.CreateSettingDto;
 import com.example.smartTerrarium.dto.GetSettingDto;
 import com.example.smartTerrarium.dto.TerrariumDataDto;
+import com.example.smartTerrarium.dto.TerrariumDataSendDto;
 import com.example.smartTerrarium.entity.Setting;
 import com.example.smartTerrarium.exception.NoCurrentSettingException;
 import com.example.smartTerrarium.exception.SettingDoesNotExistException;
@@ -10,8 +11,10 @@ import com.example.smartTerrarium.exception.SettingIsNotCustomException;
 import com.example.smartTerrarium.repository.SettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,13 +28,13 @@ import java.util.stream.Collectors;
 public class SettingService {
     private SettingRepository settingRepository;
     private UserService userService;
-    private TerrariumDataService terrariumDataService;
+    private WebClient webClient;
 
     @Autowired
-    public SettingService(SettingRepository settingRepository, UserService userService, TerrariumDataService terrariumDataService) {
+    public SettingService(SettingRepository settingRepository, UserService userService, WebClient webClient) {
         this.settingRepository = settingRepository;
         this.userService = userService;
-        this.terrariumDataService = terrariumDataService;
+        this.webClient = webClient;
     }
     public void createSetting(CreateSettingDto createSettingDto){
         Setting setting = buildSettingFromCreateSetting(createSettingDto);
@@ -118,11 +121,36 @@ public class SettingService {
     public TerrariumDataDto applySetting(Integer id) {
         changeCurrentSetting(id);
         Setting setting = getCurrentSetting();
-        terrariumDataService.sendTerariumData(terrariumDataService.mapSettingToTerrariumDataSend(setting));
+        sendTerariumData(mapSettingToTerrariumDataSend(setting));
         return TerrariumDataDto.builder()
                 .temperature(setting.getTemperature())
                 .moisture(setting.getMoisture())
                 .build();
+    }
+    public TerrariumDataSendDto mapSettingToTerrariumDataSend(Setting setting) {
+        return TerrariumDataSendDto.builder()
+                .setting_id(setting.getId().toString())
+                .plant_name(setting.getName())
+                .optimal_temperature(setting.getTemperature().floatValue())
+                .optimal_humidity(setting.getMoisture().floatValue())
+                .optimal_brightness(setting.getLightVolume().floatValue())
+                .light_schedule_start_time(setting.getLightStart())
+                .light_schedule_end_time(setting.getLightStop())
+                .watering_mode(setting.getWateringMethod())
+                .water_amount(setting.getWaterOverWeek().intValue())
+                .light_intensity(setting.getLightVolume().floatValue())
+                .DayOfWeek(mapWateringDaysToList(setting.toString()))
+                .build();
+    }
+
+    public void sendTerariumData(TerrariumDataSendDto data) {
+        webClient.post()
+                .uri("https://leafcore.eu/current-setting")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(data)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
     }
 
     private void changeCurrentSetting(Integer id) {

@@ -1,6 +1,7 @@
 package com.example.smartTerrarium.service;
 
 import com.example.smartTerrarium.dto.DashboardDto;
+import com.example.smartTerrarium.dto.HistoryDto;
 import com.example.smartTerrarium.entity.Setting;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.exception.NoTerrariumStateException;
@@ -31,6 +32,10 @@ public class TerrariumStateService {
     public TerrariumData getCurrentTerrariumState() {
         Integer userId = settingService.getCurrentSetting().getUserId();
         return terrariumDataRepository.findMostRecent(userId).orElseThrow(NoTerrariumStateException::new);
+    }
+
+    public HistoryDto buildHistory(int userId, String timeframe) {
+
     }
 
     private DashboardDto mapTerrariumDataToDto(TerrariumData terrariumData) {
