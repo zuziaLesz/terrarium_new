@@ -17,6 +17,7 @@ public class TerrariumStateController {
     @Autowired
     private final TerrariumStateService terrariumStateService;
 
+
     @GetMapping("/terrarium_state/current")
     public ResponseEntity<DashboardDto> getCurrentTerrariumState() {
         return ResponseEntity.ok(terrariumStateService.getCurrentTerrariumStateAndMapToDto());
