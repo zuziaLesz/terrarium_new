@@ -38,49 +38,61 @@ public class TerrariumStateService {
         HistoryDto historyDto = new HistoryDto();
         historyDto.setRange(new HistoryRangeDto());
         historyDto.setTimezone(ZoneId.systemDefault().toString());
-        if(timeframe.equalsIgnoreCase("day")) {
-            historyDto.getRange().setStartTime(LocalDateTime.now());
-            historyDto.getRange().setEndTime(LocalDateTime.now().minusHours(24));
-            LocalDateTime currentHour = historyDto.getRange().getStartTime();
-            LocalDateTime currentTimeFrom = currentHour.minusHours(24);
+
+        if (timeframe.equalsIgnoreCase("day")) {
+            LocalDateTime now = LocalDateTime.now();
+            historyDto.getRange().setStartTime(now);
+            historyDto.getRange().setEndTime(now.minusHours(24));
+            LocalDateTime currentHour = now;
+            LocalDateTime currentTimeFrom = now.minusHours(24);
+
+            // Build indexes (last 24 hours)
             List<String> indexes = new ArrayList<>();
-            indexes.add(currentHour.getHour() + ":00");
-            for (int i = 1; i <= 24; i++) {
+            for (int i = 23; i >= 0; i--) {
                 LocalDateTime time = currentHour.minusHours(i);
-                indexes.add(time.getHour() + ":00");
+                indexes.add(String.format("%02d:00", time.getHour()));
             }
             historyDto.setIndexes(indexes);
+
+            // Prepare series
             Map<String, List<Double>> series = new HashMap<>();
             series.put("temperature", new ArrayList<>());
             series.put("moisture", new ArrayList<>());
             series.put("brightness", new ArrayList<>());
+
+            // Most recent per hour
             Map<Integer, TerrariumData> mostRecentPerHour = new HashMap<>();
-            List<TerrariumData> terrariumDataList = terrariumDataRepository.findAllByPlantIdAndLastUpdateAfter(plantId, currentTimeFrom).orElseThrow(NoTerrariumStateException::new);
+            List<TerrariumData> terrariumDataList =
+                    terrariumDataRepository.findAllByPlantIdAndLastUpdateAfter(plantId, currentTimeFrom)
+                            .orElseThrow(NoTerrariumStateException::new);
+
             for (TerrariumData data : terrariumDataList) {
                 int hour = data.getLastUpdate().getHour();
-
                 if (!mostRecentPerHour.containsKey(hour) ||
                         data.getLastUpdate().isAfter(mostRecentPerHour.get(hour).getLastUpdate())) {
-
                     mostRecentPerHour.put(hour, data);
                 }
             }
+            Double lastTemp = null;
+            Double lastMoist = null;
+            Double lastBright = null;
+
+            // Fill series
             for (String label : indexes) {
                 int hour = Integer.parseInt(label.split(":")[0]);
-
                 TerrariumData data = mostRecentPerHour.get(hour);
 
                 if (data != null) {
-                    series.get("temperature").add(data.getTemperature());
-                    series.get("moisture").add(data.getMoisture());
-                    series.get("brightness").add(data.getBrightness());
-                } else {
-                    series.get("temperature").add(null);
-                    series.get("moisture").add(null);
-                    series.get("brightness").add(null);
+                    lastTemp = data.getTemperature();
+                    lastMoist = data.getMoisture();
+                    lastBright = data.getBrightness();
                 }
-            }
 
+                series.get("temperature").add(lastTemp);
+                series.get("moisture").add(lastMoist);
+                series.get("brightness").add(lastBright);
+            }
+            historyDto.setSeries(series);
         }
         else if(timeframe.equalsIgnoreCase("week")) {
             historyDto.getRange().setStartTime(LocalDateTime.now());
@@ -109,6 +121,9 @@ public class TerrariumStateService {
                     mostRecentPerDay.put(day, data);
                 }
             }
+            Double lastTemp = null;
+            Double lastMoist = null;
+            Double lastBright = null;
             for (String label : indexes) {
                 DayOfWeek dayOfWeek = DayOfWeek.valueOf(
                         switch (label) {
@@ -127,15 +142,15 @@ public class TerrariumStateService {
                 TerrariumData data = mostRecentPerDay.get(dayValue);
 
                 if (data != null) {
-                    series.get("temperature").add(data.getTemperature());
-                    series.get("moisture").add(data.getMoisture());
-                    series.get("brightness").add(data.getBrightness());
-                } else {
-                    series.get("temperature").add(null);
-                    series.get("moisture").add(null);
-                    series.get("brightness").add(null);
+                    lastTemp = data.getTemperature();
+                    lastMoist = data.getMoisture();
+                    lastBright = data.getBrightness();
                 }
+                series.get("temperature").add(lastTemp);
+                series.get("moisture").add(lastMoist);
+                series.get("brightness").add(lastBright);
             }
+            historyDto.setSeries(series);
         }
         else if(timeframe.equalsIgnoreCase("month")) {
             historyDto.getRange().setStartTime(LocalDateTime.now());
@@ -168,20 +183,23 @@ public class TerrariumStateService {
             series.put("moisture", new ArrayList<>());
             series.put("brightness", new ArrayList<>());
 
+            Double lastTemp = null;
+            Double lastMoist = null;
+            Double lastBright = null;
             for (String label : dayIndexes) {
                 int dayOfMonth = Integer.parseInt(label.split("/")[0]);
                 TerrariumData data = mostRecentPerDay.get(dayOfMonth);
 
                 if (data != null) {
-                    series.get("temperature").add(data.getTemperature());
-                    series.get("moisture").add(data.getMoisture());
-                    series.get("brightness").add(data.getBrightness());
-                } else {
-                    series.get("temperature").add(null);
-                    series.get("moisture").add(null);
-                    series.get("brightness").add(null);
+                    lastTemp = data.getTemperature();
+                    lastMoist = data.getMoisture();
+                    lastBright = data.getBrightness();
                 }
+                series.get("temperature").add(lastTemp);
+                series.get("moisture").add(lastMoist);
+                series.get("brightness").add(lastBright);
             }
+            historyDto.setSeries(series);
         }
         else if(timeframe.equalsIgnoreCase("year")) {
             historyDto.getRange().setStartTime(LocalDateTime.now());
@@ -215,9 +233,12 @@ public class TerrariumStateService {
             series.put("moisture", new ArrayList<>());
             series.put("brightness", new ArrayList<>());
 
+            Double lastTemp = null;
+            Double lastMoist = null;
+            Double lastBright = null;
+
             for (String label : monthIndexes) {
-                // <<< REPLACE THIS LINE WITH THE SWITCH >>>
-                String shortName = label.split(" ")[0]; // "Jan"
+                String shortName = label.split(" ")[0];
                 Month monthEnum = switch(shortName) {
                     case "Jan" -> Month.JANUARY;
                     case "Feb" -> Month.FEBRUARY;
@@ -233,20 +254,20 @@ public class TerrariumStateService {
                     case "Dec" -> Month.DECEMBER;
                     default -> throw new IllegalArgumentException("Unknown month: " + shortName);
                 };
-                int monthValue = monthEnum.getValue(); // 1-12
+                int monthValue = monthEnum.getValue();
 
                 TerrariumData data = mostRecentPerMonth.get(monthValue);
 
                 if (data != null) {
-                    series.get("temperature").add(data.getTemperature());
-                    series.get("moisture").add(data.getMoisture());
-                    series.get("brightness").add(data.getBrightness());
-                } else {
-                    series.get("temperature").add(null);
-                    series.get("moisture").add(null);
-                    series.get("brightness").add(null);
+                    lastTemp = data.getTemperature();
+                    lastMoist = data.getMoisture();
+                    lastBright = data.getBrightness();
                 }
+                series.get("temperature").add(lastTemp);
+                series.get("moisture").add(lastMoist);
+                series.get("brightness").add(lastBright);
             }
+            historyDto.setSeries(series);
         }
 
         return historyDto;
