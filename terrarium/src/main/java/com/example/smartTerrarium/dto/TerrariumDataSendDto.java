@@ -16,8 +16,8 @@ public class TerrariumDataSendDto {
     private Float optimal_temperature;
     private Float optimal_humidity;
     private Float optimal_brightness;
-    private LocalTime light_schedule_start_time;
-    private LocalTime light_schedule_end_time;
+    private String light_schedule_start_time;
+    private String light_schedule_end_time;
     private String watering_mode;
     private int water_amount;
     private Float light_intensity;

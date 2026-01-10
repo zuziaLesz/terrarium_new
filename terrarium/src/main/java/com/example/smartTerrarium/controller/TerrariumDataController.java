@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,7 +28,22 @@ public class TerrariumDataController {
     }
     @GetMapping("/sendData")
     public TerrariumDataSendDto sendSetting() {
-        Setting currentSetting = settingService.getCurrentSetting();
-        return settingService.mapSettingToTerrariumDataSend(currentSetting);
+        Setting dummySetting = new Setting();
+        dummySetting.setId(1);
+        dummySetting.setName("Test Plant");
+        dummySetting.setDescription("Dummy setting for testing");
+        dummySetting.setTemperature(22.5);
+        dummySetting.setMoisture(45.0);
+        dummySetting.setWaterOverWeek(200.0);
+        dummySetting.setWateringDays("MONDAY, FRIDAY");
+        dummySetting.setWateringMethod("Drip");
+        dummySetting.setLightStart(LocalTime.of(6, 0));   // 6:00 AM
+        dummySetting.setLightStop(LocalTime.of(18, 0));   // 6:00 PM
+        dummySetting.setLightVolume(300.0);
+        dummySetting.setCustom(true);
+        dummySetting.setLastUpdated(new Date());
+        dummySetting.setCurrentlyUsed(true);
+        dummySetting.setUserId(66);
+        return settingService.mapSettingToTerrariumDataSend(dummySetting);
     }
 }

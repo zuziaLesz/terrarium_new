@@ -134,12 +134,12 @@ public class SettingService {
                 .optimal_temperature(setting.getTemperature().floatValue())
                 .optimal_humidity(setting.getMoisture().floatValue())
                 .optimal_brightness(setting.getLightVolume().floatValue())
-                .light_schedule_start_time(setting.getLightStart())
-                .light_schedule_end_time(setting.getLightStop())
+                .light_schedule_start_time(setting.getLightStart().toString())
+                .light_schedule_end_time(setting.getLightStop().toString())
                 .watering_mode(setting.getWateringMethod())
                 .water_amount(setting.getWaterOverWeek().intValue())
                 .light_intensity(setting.getLightVolume().floatValue())
-                .DayOfWeek(mapWateringDaysToList(setting.toString()))
+                .DayOfWeek(mapWateringDaysToList(setting.getWateringDays()))
                 .build();
     }
 
