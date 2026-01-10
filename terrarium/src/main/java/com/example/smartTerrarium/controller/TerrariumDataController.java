@@ -2,6 +2,7 @@ package com.example.smartTerrarium.controller;
 
 import com.example.smartTerrarium.dto.TerrariumDataDto;
 import com.example.smartTerrarium.dto.TerrariumDataSendDto;
+import com.example.smartTerrarium.entity.Setting;
 import com.example.smartTerrarium.entity.TerrariumData;
 import com.example.smartTerrarium.service.SettingService;
 import com.example.smartTerrarium.service.TerrariumDataService;
@@ -23,8 +24,9 @@ public class TerrariumDataController {
     public List<TerrariumData> getTemperatureFromTerrarium(@RequestBody List<TerrariumDataDto> terrariumDataDto) {
             return (terrariumDataService.saveTerrariumData(terrariumDataDto));
     }
-    @PostMapping("/sendData")
-    public void sendSetting(@RequestBody TerrariumDataSendDto terrariumDataSendDto) {
-        settingService.sendTerariumData(terrariumDataSendDto);
+    @GetMapping("/sendData")
+    public TerrariumDataSendDto sendSetting() {
+        Setting currentSetting = settingService.getCurrentSetting();
+        return settingService.mapSettingToTerrariumDataSend(currentSetting);
     }
 }

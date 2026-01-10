@@ -1,9 +1,16 @@
 package com.example.smartTerrarium.dto;
 
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class HistoryDto {
     private String timezone;
     private HistoryRangeDto range;
