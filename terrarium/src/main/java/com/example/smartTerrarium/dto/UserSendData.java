@@ -11,4 +11,5 @@ public class UserSendData {
     private String email;
     private String name;
     private String token;
+    private int userId;
 }

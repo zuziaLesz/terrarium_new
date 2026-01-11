@@ -18,11 +18,6 @@ import java.util.List;
 public class ModuleController {
     @Autowired
     private final ModuleService moduleService;
-    @PostMapping("/module")
-    ResponseEntity<Void> addModule(@RequestBody CreateModuleDto createModuleDto) {
-        moduleService.add(createModuleDto);
-        return ResponseEntity.ok().build();
-    }
     @GetMapping("/module")
     ResponseEntity<List<Module>> getAll() {
         return  ResponseEntity.ok(moduleService.getAllModules());
