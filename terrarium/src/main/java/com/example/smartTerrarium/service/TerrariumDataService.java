@@ -32,8 +32,7 @@ public class TerrariumDataService {
         this.settingService = settingService;
         this.moduleRepository = moduleRepository;
     }
-    public List<TerrariumData> saveTerrariumData (List<TerrariumDataDto> terrariumDataDto, String groupId) {
-        Setting setting = settingService.getCurrentSetting();
+    public List<TerrariumData> saveTerrariumData (List<TerrariumDataDto> terrariumDataDto, Setting setting, String groupId) {
         List<TerrariumData> terrariumDataList = terrariumDataDto.stream()
                 .map(dto -> TerrariumData.builder()
                         .temperature(dto.getTemperature())

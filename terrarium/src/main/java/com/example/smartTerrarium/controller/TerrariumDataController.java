@@ -26,7 +26,8 @@ public class TerrariumDataController {
 
     @PostMapping("/dataTerrarium/{groupId}")
     public ResponseEntity<List<TerrariumData>> getTemperatureFromTerrarium(@RequestBody List<TerrariumDataDto> terrariumDataDto, @PathVariable String groupId) {
-            return ResponseEntity.ok(terrariumDataService.saveTerrariumData(terrariumDataDto, groupId));
+        Setting setting = terrariumDataService.getCurrentSettingByGroupId(groupId);
+        return ResponseEntity.ok(terrariumDataService.saveTerrariumData(terrariumDataDto, setting, groupId));
     }
     @PostMapping("/module")
     public ResponseEntity<Void> addModule(@RequestBody CreateModuleDto createModuleDto) {
