@@ -1,5 +1,6 @@
 package com.example.smartTerrarium.service;
 
+import com.example.smartTerrarium.dto.CommendDto;
 import com.example.smartTerrarium.dto.DashboardDto;
 import com.example.smartTerrarium.dto.HistoryDto;
 import com.example.smartTerrarium.dto.HistoryRangeDto;
@@ -9,7 +10,9 @@ import com.example.smartTerrarium.exception.NoTerrariumStateException;
 import com.example.smartTerrarium.repository.TerrariumDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -23,6 +26,7 @@ public class TerrariumStateService {
     @Autowired
     private final TerrariumDataRepository terrariumDataRepository;
     private final SettingService settingService;
+    private final WebClient webClient;
 
     public DashboardDto getCurrentTerrariumStateAndMapToDto() {
         TerrariumData terrariumData = getCurrentTerrariumState();
@@ -273,6 +277,42 @@ public class TerrariumStateService {
         return historyDto;
     }
 
+    public void waterPlant() {
+        CommendDto dto = new CommendDto();
+        Setting setting = settingService.getCurrentSetting();
+        if(setting.getWateringMethod().equalsIgnoreCase("sprinkler")) {
+            dto.setComponent("sprinkler");
+        }
+        else if(setting.getWateringMethod().equalsIgnoreCase("standard")) {
+            dto.setComponent("pump");
+        }
+        dto.setAction("on");
+        webClient.post()
+                .uri("https://leafcore.eu/podlewamKwiataZmienAdres")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(dto)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
+    public void lightPlant(Double brightness) {
+        CommendDto dto = new CommendDto();
+        dto.setComponent("light");
+        if(brightness == 0) {
+            dto.setAction("off");
+        }
+        else dto.setAction("on");
+        dto.setIntensity(brightness.toString());
+        webClient.post()
+                .uri("https://leafcore.eu/aTutajDajeLampeBum")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(dto)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
     private DashboardDto mapTerrariumDataToDto(TerrariumData terrariumData) {
         Setting currentSetting = settingService.getCurrentSetting();
         return DashboardDto.builder()
@@ -287,6 +327,7 @@ public class TerrariumStateService {
                 .image(currentSetting.getImage())
                 .build();
     }
+
     private Timestamp checkTimeUntilWatering() {
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
