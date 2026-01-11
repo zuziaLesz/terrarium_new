@@ -1,6 +1,7 @@
 package com.example.smartTerrarium.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
@@ -19,4 +20,5 @@ public class DashboardDto {
     private Timestamp timeUntilWatering;
     private String name;
     private String description;
+    private byte[] image;
 }

@@ -36,7 +36,7 @@ public class SettingService {
         this.userService = userService;
         this.webClient = webClient;
     }
-    public void createSetting(CreateSettingDto createSettingDto){
+    public void createSetting(CreateSettingDto createSettingDto) throws IOException {
         Setting setting = buildSettingFromCreateSetting(createSettingDto);
         settingRepository.save(setting);
         changeCurrentSetting(setting.getId());
@@ -79,6 +79,7 @@ public class SettingService {
         if(createSettingDto.getWateringDays() != null && !createSettingDto.getWateringDays().isEmpty()) {
             setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
         }
+        sendTerariumData(mapSettingToTerrariumDataSend(setting));
         settingRepository.save(setting);
     }
 
@@ -166,7 +167,7 @@ public class SettingService {
         setting.setCurrentlyUsed(true);
         settingRepository.save(setting);
     }
-    private Setting buildSettingFromCreateSetting(CreateSettingDto createSettingDto){
+    private Setting buildSettingFromCreateSetting(CreateSettingDto createSettingDto) throws IOException {
         Setting setting = Setting.builder()
                 .name(createSettingDto.getName())
                 .description(createSettingDto.getDescription())
@@ -181,6 +182,7 @@ public class SettingService {
                 .lastUpdated(new Date())
                 .isCurrentlyUsed(false)
                 .userId(userService.getCurrentUser().getId())
+                .image(createSettingDto.getImage().getBytes())
                 .build();
         setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
         return setting;

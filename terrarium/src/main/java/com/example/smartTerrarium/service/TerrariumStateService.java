@@ -284,6 +284,7 @@ public class TerrariumStateService {
                 .lightStart(currentSetting.getLightStart())
                 .lightEnd(currentSetting.getLightStop())
                 .timeUntilWatering(checkTimeUntilWatering())
+                .image(currentSetting.getImage())
                 .build();
     }
     private Timestamp checkTimeUntilWatering() {

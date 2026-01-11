@@ -21,7 +21,7 @@ public class SettingController {
     }
 
     @PostMapping("/setting")
-    public ResponseEntity<Void> createSetting(@RequestBody CreateSettingDto createSettingDto) {
+    public ResponseEntity<Void> createSetting(@RequestBody CreateSettingDto createSettingDto) throws IOException {
         settingService.createSetting(createSettingDto);
         return ResponseEntity.noContent().build();
     }

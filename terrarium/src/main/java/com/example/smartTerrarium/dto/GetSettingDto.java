@@ -1,6 +1,7 @@
 package com.example.smartTerrarium.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
 import java.util.Date;
@@ -27,4 +28,5 @@ public class GetSettingDto {
     private List<String> wateringDays;
     private String wateringMethod;
     private double lightVolume;
+    private MultipartFile image;
 }
