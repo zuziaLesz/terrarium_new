@@ -5,17 +5,12 @@ import com.example.smartTerrarium.dto.TerrariumDataSendDto;
 import com.example.smartTerrarium.entity.Module;
 import com.example.smartTerrarium.entity.Setting;
 import com.example.smartTerrarium.entity.TerrariumData;
-import com.example.smartTerrarium.entity.User;
 import com.example.smartTerrarium.repository.ModuleRepository;
-import com.example.smartTerrarium.repository.SettingRepository;
 import com.example.smartTerrarium.repository.TerrariumDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
