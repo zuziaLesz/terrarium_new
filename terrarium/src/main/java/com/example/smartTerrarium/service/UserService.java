@@ -1,9 +1,6 @@
 package com.example.smartTerrarium.service;
 
-import com.example.smartTerrarium.dto.CreateUserDto;
-import com.example.smartTerrarium.dto.UserEditDto;
-import com.example.smartTerrarium.dto.UserLoginData;
-import com.example.smartTerrarium.dto.UserSendData;
+import com.example.smartTerrarium.dto.*;
 import com.example.smartTerrarium.entity.User;
 import com.example.smartTerrarium.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -27,7 +25,6 @@ public class UserService {
     }
 
     public User registerUser(CreateUserDto userDto) {
-        // check if email already taken
         if(userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new RuntimeException("Email already in use");
         }
@@ -81,5 +78,18 @@ public class UserService {
         else userEditDto.setName(user.getName());
         userRepository.save(user);
         return userEditDto;
+    }
+    public void changePassword(ChangePasswordDto changePasswordDto, int id) {
+        User user = userRepository.getUserById(id);
+        if(!Objects.equals(changePasswordDto.getNewPassword(), changePasswordDto.getConfirmPassword())) {
+            throw new RuntimeException("Passwords must match");
+        }
+        if(passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+            userRepository.save(user);
+        }
+        else {
+            throw new RuntimeException("Passwords do not match");
+        }
     }
 }

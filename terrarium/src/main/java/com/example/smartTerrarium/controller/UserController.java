@@ -1,9 +1,6 @@
 package com.example.smartTerrarium.controller;
 
-import com.example.smartTerrarium.dto.CreateUserDto;
-import com.example.smartTerrarium.dto.UserEditDto;
-import com.example.smartTerrarium.dto.UserLoginData;
-import com.example.smartTerrarium.dto.UserSendData;
+import com.example.smartTerrarium.dto.*;
 import com.example.smartTerrarium.entity.User;
 import com.example.smartTerrarium.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,11 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserSendData> login(@RequestBody UserLoginData loginData) {
         return ResponseEntity.ok(userService.login(loginData));
+    }
+    @PutMapping("/changePassword/{userId}")
+    public ResponseEntity<Void> changePassword(@PathVariable int userId, @RequestBody ChangePasswordDto changePasswordDto) {
+        userService.changePassword(changePasswordDto, userId);
+        return ResponseEntity.ok().build();
     }
     @PutMapping("/edit/{id}")
     public ResponseEntity<UserEditDto> editUser(@RequestBody UserEditDto userDto, @PathVariable Integer id) {
