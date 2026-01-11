@@ -127,6 +127,9 @@ public class SettingService {
                 .moisture(setting.getMoisture())
                 .build();
     }
+    public void save(Setting setting) {
+        settingRepository.save(setting);
+    }
     public TerrariumDataSendDto mapSettingToTerrariumDataSend(Setting setting) {
         return TerrariumDataSendDto.builder()
                 .setting_id(setting.getId().toString())
@@ -193,7 +196,9 @@ public class SettingService {
         return settingRepository.findCurrentlyUsed(currentUserId).orElseThrow(NoCurrentSettingException::new);
     }
 
-
+    public Setting getCurrentSettingByUserId(Integer userId) {
+        return settingRepository.findCurrentlyUsed(userId).orElseThrow(NoCurrentSettingException::new);
+    }
 
     private GetSettingDto mapSettingToDto(Setting setting) {
         GetSettingDto settingDto = GetSettingDto.builder()
@@ -222,7 +227,7 @@ public class SettingService {
         return currentSetting.isPresent();
     }
 
-    private String mapWateringDaysToString(List<String> listOfDays) {
+    public String mapWateringDaysToString(List<String> listOfDays) {
         return listOfDays.stream()
                 .map(String::toUpperCase)
                 .collect(Collectors.joining(","));

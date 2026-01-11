@@ -49,6 +49,7 @@ public class UserService {
            return UserSendData.builder()
                    .email(user.getEmail())
                    .name(user.getName())
+                   .userId(user.getId())
                    .token(token)
                    .build();
         }

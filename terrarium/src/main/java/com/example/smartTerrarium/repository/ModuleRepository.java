@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface ModuleRepository extends JpaRepository<Module, Integer> {
-    @Query(value = "SELECT * FROM Module WHERE user_id = :userId ", nativeQuery = true)
+    @Query(value = "SELECT * FROM module WHERE user_id = :userId ", nativeQuery = true)
     Optional<List<Module>> findModulesByUser(@Param("userId") int userId);
+
+    Optional<Module> findFirstByGroupId(String groupId);
 }

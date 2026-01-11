@@ -26,33 +26,23 @@ public class TerrariumDataController {
     private final SettingService settingService;
     private final ModuleService moduleService;
 
-    @PostMapping("/dataTerrarium")
-    public List<TerrariumData> getTemperatureFromTerrarium(@RequestBody List<TerrariumDataDto> terrariumDataDto) {
-            return (terrariumDataService.saveTerrariumData(terrariumDataDto));
+    @PostMapping("/dataTerrarium/{groupId}")
+    public ResponseEntity<List<TerrariumData>> getTemperatureFromTerrarium(@RequestBody List<TerrariumDataDto> terrariumDataDto, @PathVariable String groupId) {
+            return ResponseEntity.ok(terrariumDataService.saveTerrariumData(terrariumDataDto, groupId));
     }
     @PostMapping("/module")
-    ResponseEntity<Void> addModule(@RequestBody CreateModuleDto createModuleDto) {
+    public ResponseEntity<Void> addModule(@RequestBody CreateModuleDto createModuleDto) {
         moduleService.add(createModuleDto);
         return ResponseEntity.ok().build();
     }
-    @PostMapping("/sendData")
-    public TerrariumDataSendDto sendSetting() {
-        Setting dummySetting = new Setting();
-        dummySetting.setId(1);
-        dummySetting.setName("Test Plant");
-        dummySetting.setDescription("Dummy setting for testing");
-        dummySetting.setTemperature(22.5);
-        dummySetting.setMoisture(45.0);
-        dummySetting.setWaterOverWeek(200.0);
-        dummySetting.setWateringDays("MONDAY, FRIDAY");
-        dummySetting.setWateringMethod("Drip");
-        dummySetting.setLightStart(LocalTime.of(6, 0));   // 6:00 AM
-        dummySetting.setLightStop(LocalTime.of(18, 0));   // 6:00 PM
-        dummySetting.setLightVolume(300.0);
-        dummySetting.setCustom(true);
-        dummySetting.setLastUpdated(new Date());
-        dummySetting.setCurrentlyUsed(true);
-        dummySetting.setUserId(66);
-        return settingService.mapSettingToTerrariumDataSend(dummySetting);
+    @PostMapping("/sendData/{groupId}")
+    public ResponseEntity<TerrariumDataSendDto> sendSetting(@PathVariable String groupId) {
+        Setting setting = terrariumDataService.getCurrentSettingByGroupId(groupId);
+        return ResponseEntity.ok(settingService.mapSettingToTerrariumDataSend(setting));
+    }
+    @PostMapping("/updateSetting/{groupId}")
+    public ResponseEntity<Void> updateSetting(@PathVariable String groupId, @RequestBody TerrariumDataSendDto dto) {
+        terrariumDataService.mapTerrariumSendDataToSettingAndSave(dto, groupId);
+        return ResponseEntity.ok().build();
     }
 }

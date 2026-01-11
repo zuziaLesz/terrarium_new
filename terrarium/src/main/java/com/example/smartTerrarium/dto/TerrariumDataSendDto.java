@@ -18,7 +18,7 @@ public class TerrariumDataSendDto {
     private String light_schedule_start_time;
     private String light_schedule_end_time;
     private String watering_mode;
-    private int water_amount;
+    private Integer water_amount;
     private Float light_intensity;
     private List<String> DayOfWeek;
 }

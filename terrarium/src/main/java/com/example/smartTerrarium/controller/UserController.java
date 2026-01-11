@@ -25,7 +25,6 @@ public class UserController {
 
     @PostMapping("/createDefaultUser")
     public ResponseEntity<User> createDefaultUser (@RequestBody com.example.smartTerrarium.dto.CreateUserDto userDto) {
-        // Create default user using provided credentials (name/email/password)
         User user = userService.registerUser(userDto);
         return ResponseEntity.ok(user);
     }
