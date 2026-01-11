@@ -42,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @PutMapping("/edit/{id}")
-    public ResponseEntity<UserEditDto> editUser(@RequestBody UserEditDto userDto, @PathVariable Integer id) {
+    public ResponseEntity<NewUserDataDto> editUser(@RequestBody UserEditDto userDto, @PathVariable Integer id) {
         return ResponseEntity.ok(userService.editUser(userDto, id));
     }
     @GetMapping

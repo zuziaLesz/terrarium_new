@@ -66,18 +66,22 @@ public class UserService {
                 .getAuthentication()
                 .getPrincipal();
     }
-    public UserEditDto editUser(UserEditDto userEditDto, Integer id) {
+    public NewUserDataDto editUser(UserEditDto userEditDto, Integer id) {
         User user = userRepository.getUserById(id);
+        NewUserDataDto newUserDataDto = new NewUserDataDto();
+        if(!passwordEncoder.matches(userEditDto.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
         if(userEditDto.getEmail() != null) {
             user.setEmail(userEditDto.getEmail());
         }
-        else userEditDto.setEmail(user.getEmail());
         if(userEditDto.getName() != null) {
             user.setName(userEditDto.getName());
         }
-        else userEditDto.setName(user.getName());
+        newUserDataDto.setEmail(user.getEmail());
+        newUserDataDto.setName(user.getName());
         userRepository.save(user);
-        return userEditDto;
+        return newUserDataDto;
     }
     public void changePassword(ChangePasswordDto changePasswordDto, int id) {
         User user = userRepository.getUserById(id);
