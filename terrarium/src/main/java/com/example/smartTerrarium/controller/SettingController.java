@@ -5,6 +5,7 @@ import com.example.smartTerrarium.dto.GetSettingDto;
 import com.example.smartTerrarium.dto.TerrariumDataDto;
 import com.example.smartTerrarium.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,7 @@ public class SettingController {
         this.settingService = settingService;
     }
 
-    @PostMapping("/setting")
+    @PostMapping(value = "/setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createSetting(@RequestBody CreateSettingDto createSettingDto) throws IOException {
         settingService.createSetting(createSettingDto);
         return ResponseEntity.noContent().build();
