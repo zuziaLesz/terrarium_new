@@ -218,6 +218,7 @@ public class SettingService {
                 .userId(setting.getUserId())
                 .wateringMethod(setting.getWateringMethod())
                 .lightVolume(setting.getLightVolume())
+                .image(setting.getImage())
                 .build();
         settingDto.setWateringDays(mapWateringDaysToList(setting.getWateringDays()));
         return settingDto;

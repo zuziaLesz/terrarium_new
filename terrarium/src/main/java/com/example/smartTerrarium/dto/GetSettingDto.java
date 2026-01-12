@@ -28,5 +28,5 @@ public class GetSettingDto {
     private List<String> wateringDays;
     private String wateringMethod;
     private double lightVolume;
-    private MultipartFile image;
+    private byte[] image;
 }
