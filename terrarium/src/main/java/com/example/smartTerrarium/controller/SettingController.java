@@ -22,7 +22,7 @@ public class SettingController {
     }
 
     @PostMapping(value = "/setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> createSetting(@RequestBody CreateSettingDto createSettingDto) throws IOException {
+    public ResponseEntity<Void> createSetting(@ModelAttribute CreateSettingDto createSettingDto) throws IOException {
         settingService.createSetting(createSettingDto);
         return ResponseEntity.noContent().build();
     }
