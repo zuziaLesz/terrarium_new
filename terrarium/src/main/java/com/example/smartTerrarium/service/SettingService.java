@@ -39,7 +39,6 @@ public class SettingService {
     public void createSetting(CreateSettingDto createSettingDto) throws IOException {
         Setting setting = buildSettingFromCreateSetting(createSettingDto);
         settingRepository.save(setting);
-        changeCurrentSetting(setting.getId());
     }
 
     public void editSetting(Integer id, CreateSettingDto createSettingDto) {
@@ -149,7 +148,7 @@ public class SettingService {
 
     public void sendTerariumData(TerrariumDataSendDto data) {
         webClient.post()
-                .uri("https://leafcore.eu/current-setting")
+                .uri("https://api.leafcore.eu/external/settings")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(data)
                 .retrieve()
@@ -182,9 +181,11 @@ public class SettingService {
                 .lastUpdated(new Date())
                 .isCurrentlyUsed(false)
                 .userId(userService.getCurrentUser().getId())
-                .image(createSettingDto.getImage().getBytes())
                 .build();
         setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
+        if(createSettingDto.getImage() != null) {
+            setting.setImage(createSettingDto.getImage().getBytes());
+        }
         return setting;
     }
 

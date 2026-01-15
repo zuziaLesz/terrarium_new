@@ -52,10 +52,11 @@ public class TerrariumStateService {
 
             // Build indexes (last 24 hours)
             List<String> indexes = new ArrayList<>();
-            for (int i = 23; i >= 0; i--) {
+            for (int i = 24; i > 0; i--) {
                 LocalDateTime time = currentHour.minusHours(i);
                 indexes.add(String.format("%02d:00", time.getHour()));
             }
+            indexes.add(String.format("%02d:00", now.getHour()));
             historyDto.setIndexes(indexes);
 
             // Prepare series
@@ -105,7 +106,7 @@ public class TerrariumStateService {
             LocalDateTime currentTimeFrom = currentDay.minusDays(7);
             List<String> indexes = new ArrayList<>();
             indexes.add(currentDay.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-            for (int i = 1; i <= 7; i++) {
+            for (int i = 0; i < 7; i++) {
                 LocalDateTime time = currentDay.minusDays(i);
                 indexes.add(time.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
             }
@@ -205,74 +206,6 @@ public class TerrariumStateService {
             }
             historyDto.setSeries(series);
         }
-        else if(timeframe.equalsIgnoreCase("year")) {
-            historyDto.getRange().setStartTime(LocalDateTime.now());
-            historyDto.getRange().setEndTime(LocalDateTime.now().minusMonths(12));
-            LocalDateTime currentMonth = historyDto.getRange().getStartTime();
-            LocalDateTime currentTimeFromYear = currentMonth.minusMonths(12);
-
-            List<String> monthIndexes = new ArrayList<>();
-            for (int i = 0; i <= 12; i++) {
-                LocalDateTime month = currentMonth.minusMonths(i);
-                monthIndexes.add(month.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " " + month.getYear());
-            }
-            Collections.reverse(monthIndexes);
-            historyDto.setIndexes(monthIndexes);
-
-            Map<Integer, TerrariumData> mostRecentPerMonth = new HashMap<>();
-            List<TerrariumData> terrariumDataYear =
-                    terrariumDataRepository.findAllByPlantIdAndLastUpdateAfter(plantId, currentTimeFromYear)
-                            .orElseThrow(NoTerrariumStateException::new);
-
-            for (TerrariumData data : terrariumDataYear) {
-                int monthValue = data.getLastUpdate().getMonthValue();
-                if (!mostRecentPerMonth.containsKey(monthValue) ||
-                        data.getLastUpdate().isAfter(mostRecentPerMonth.get(monthValue).getLastUpdate())) {
-                    mostRecentPerMonth.put(monthValue, data);
-                }
-            }
-
-            Map<String, List<Double>> series = new HashMap<>();
-            series.put("temperature", new ArrayList<>());
-            series.put("moisture", new ArrayList<>());
-            series.put("brightness", new ArrayList<>());
-
-            Double lastTemp = null;
-            Double lastMoist = null;
-            Double lastBright = null;
-
-            for (String label : monthIndexes) {
-                String shortName = label.split(" ")[0];
-                Month monthEnum = switch(shortName) {
-                    case "Jan" -> Month.JANUARY;
-                    case "Feb" -> Month.FEBRUARY;
-                    case "Mar" -> Month.MARCH;
-                    case "Apr" -> Month.APRIL;
-                    case "May" -> Month.MAY;
-                    case "Jun" -> Month.JUNE;
-                    case "Jul" -> Month.JULY;
-                    case "Aug" -> Month.AUGUST;
-                    case "Sep" -> Month.SEPTEMBER;
-                    case "Oct" -> Month.OCTOBER;
-                    case "Nov" -> Month.NOVEMBER;
-                    case "Dec" -> Month.DECEMBER;
-                    default -> throw new IllegalArgumentException("Unknown month: " + shortName);
-                };
-                int monthValue = monthEnum.getValue();
-
-                TerrariumData data = mostRecentPerMonth.get(monthValue);
-
-                if (data != null) {
-                    lastTemp = data.getTemperature();
-                    lastMoist = data.getMoisture();
-                    lastBright = data.getBrightness();
-                }
-                series.get("temperature").add(lastTemp);
-                series.get("moisture").add(lastMoist);
-                series.get("brightness").add(lastBright);
-            }
-            historyDto.setSeries(series);
-        }
 
         return historyDto;
     }
@@ -288,7 +221,7 @@ public class TerrariumStateService {
         }
         dto.setAction("on");
         webClient.post()
-                .uri("https://leafcore.eu/external/watering")
+                .uri("https://api.leafcore.eu/external/watering")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
                 .retrieve()
@@ -305,7 +238,7 @@ public class TerrariumStateService {
         else dto.setAction("on");
         dto.setIntensity(brightness.toString());
         webClient.post()
-                .uri("https://leafcore.eu/external/light")
+                .uri("https://api.leafcore.eu/external/light")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
                 .retrieve()
