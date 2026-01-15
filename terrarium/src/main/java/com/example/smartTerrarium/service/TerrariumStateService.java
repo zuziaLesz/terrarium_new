@@ -288,7 +288,7 @@ public class TerrariumStateService {
         }
         dto.setAction("on");
         webClient.post()
-                .uri("https://leafcore.eu/podlewamKwiataZmienAdres")
+                .uri("https://leafcore.eu/external/watering")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
                 .retrieve()
@@ -305,7 +305,7 @@ public class TerrariumStateService {
         else dto.setAction("on");
         dto.setIntensity(brightness.toString());
         webClient.post()
-                .uri("https://leafcore.eu/aTutajDajeLampeBum")
+                .uri("https://leafcore.eu/external/light")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
                 .retrieve()
