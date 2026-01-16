@@ -135,6 +135,12 @@ public class SettingService {
                 .moisture(setting.getMoisture())
                 .build();
     }
+    public void addPredefined(Integer id) {
+        SettingPredefined preSetting = settingPredefinedRepository.findById(id).orElseThrow(() -> new SettingDoesNotExistException(id));
+        Integer userId = userService.getCurrentUser().getId();
+        Setting setting = mapPredefinedSettingToEntity(preSetting, userId);
+        settingRepository.save(setting);
+    }
     public void save(Setting setting) {
         settingRepository.save(setting);
     }
@@ -263,5 +269,24 @@ public class SettingService {
                 .build();
         dto.setWateringDays(mapWateringDaysToList(setting.getWatering_days()));
         return dto;
+    }
+    private Setting mapPredefinedSettingToEntity(SettingPredefined predefined, Integer userId) {
+        return Setting.builder()
+                .name(predefined.getName())
+                .description(predefined.getDescription())
+                .temperature(predefined.getTemperature())
+                .moisture(predefined.getMoisture())
+                .waterOverWeek(predefined.getWater_amount())
+                .wateringDays(predefined.getWatering_days())
+                .wateringMethod(predefined.getWatering_method())
+                .lightStart(predefined.getLight_start())
+                .lightStop(predefined.getLight_end())
+                .lightVolume(predefined.getLight_volume())
+                .isCustom(true)
+                .lastUpdated(new Date())
+                .userId(userId)
+                .isCurrentlyUsed(false)
+                .image(predefined.getImage())
+                .build();
     }
 }

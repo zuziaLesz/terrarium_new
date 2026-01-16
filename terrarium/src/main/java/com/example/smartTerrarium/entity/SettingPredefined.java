@@ -22,6 +22,7 @@ public class SettingPredefined {
     private Double temperature;
     private Double moisture;
     private LocalTime light_start;
+    @Column(name="light_stop")
     private LocalTime light_end;
     private Double light_volume;
     private Double water_amount;
