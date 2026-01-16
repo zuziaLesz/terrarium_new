@@ -1,13 +1,12 @@
 package com.example.smartTerrarium.service;
 
-import com.example.smartTerrarium.dto.CreateSettingDto;
-import com.example.smartTerrarium.dto.GetSettingDto;
-import com.example.smartTerrarium.dto.TerrariumDataDto;
-import com.example.smartTerrarium.dto.TerrariumDataSendDto;
+import com.example.smartTerrarium.dto.*;
 import com.example.smartTerrarium.entity.Setting;
+import com.example.smartTerrarium.entity.SettingPredefined;
 import com.example.smartTerrarium.exception.NoCurrentSettingException;
 import com.example.smartTerrarium.exception.SettingDoesNotExistException;
 import com.example.smartTerrarium.exception.SettingIsNotCustomException;
+import com.example.smartTerrarium.repository.SettingPredefinedRepository;
 import com.example.smartTerrarium.repository.SettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +28,14 @@ public class SettingService {
     private SettingRepository settingRepository;
     private UserService userService;
     private WebClient webClient;
+    private SettingPredefinedRepository settingPredefinedRepository;
 
     @Autowired
-    public SettingService(SettingRepository settingRepository, UserService userService, WebClient webClient) {
+    public SettingService(SettingRepository settingRepository, UserService userService, WebClient webClient, SettingPredefinedRepository settingPredefinedRepository) {
         this.settingRepository = settingRepository;
         this.userService = userService;
         this.webClient = webClient;
+        this.settingPredefinedRepository = settingPredefinedRepository;
     }
     public void createSetting(CreateSettingDto createSettingDto) throws IOException {
         Setting setting = buildSettingFromCreateSetting(createSettingDto);
@@ -101,6 +102,13 @@ public class SettingService {
                 .collect(Collectors.toList());
     }
 
+    public List<GetPredefinedSettingDto> getAllPredefinedSettings() {
+        List<SettingPredefined> settingList = settingPredefinedRepository.findAll();
+        return settingList.stream()
+                .map(this::mapPredefinedSettingToDto)
+                .collect(Collectors.toList());
+    }
+
     public GetSettingDto getSetting(Integer id) {
         Setting setting = getSettingById(id);
         return mapSettingToDto(setting);
@@ -127,6 +135,7 @@ public class SettingService {
                 .moisture(setting.getMoisture())
                 .build();
     }
+    public void
     public void save(Setting setting) {
         settingRepository.save(setting);
     }
@@ -240,5 +249,20 @@ public class SettingService {
     public List<String> mapWateringDaysToList(String listOfDays) {
         return Arrays.stream(listOfDays.split(","))
                 .collect(Collectors.toList());
+    }
+    private GetPredefinedSettingDto mapPredefinedSettingToDto(SettingPredefined setting) {
+        GetPredefinedSettingDto dto = GetPredefinedSettingDto.builder()
+                .id(setting.getId())
+                .name(setting.getName())
+                .description(setting.getDescription())
+                .temperature(setting.getTemperature())
+                .moisture(setting.getMoisture())
+                .lightStart(setting.getLight_start())
+                .lightStop(setting.getLight_end())
+                .wateringMethod(setting.getWatering_method())
+                .lightVolume(setting.getLight_volume())
+                .build();
+        dto.setWateringDays(mapWateringDaysToList(setting.getWatering_days()));
+        return dto;
     }
 }

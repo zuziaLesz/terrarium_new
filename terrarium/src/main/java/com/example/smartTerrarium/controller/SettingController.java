@@ -1,6 +1,7 @@
 package com.example.smartTerrarium.controller;
 
 import com.example.smartTerrarium.dto.CreateSettingDto;
+import com.example.smartTerrarium.dto.GetPredefinedSettingDto;
 import com.example.smartTerrarium.dto.GetSettingDto;
 import com.example.smartTerrarium.dto.TerrariumDataDto;
 import com.example.smartTerrarium.service.SettingService;
@@ -41,6 +42,16 @@ public class SettingController {
     @GetMapping("/setting")
     public ResponseEntity<List<GetSettingDto>>getAllSettings() {
         return ResponseEntity.ok(settingService.getAllSettings());
+    }
+
+    @GetMapping("/setting/predefined")
+    public ResponseEntity<List<GetPredefinedSettingDto>> getPredefinedSettings() {
+        return ResponseEntity.ok(settingService.getAllPredefinedSettings());
+    }
+
+    @PostMapping("/addPredefined/{id}")
+    public ResponseEntity<Void> addPredefinedSetting(@PathVariable Integer id) {
+
     }
 
     @GetMapping("/setting/{id}")
