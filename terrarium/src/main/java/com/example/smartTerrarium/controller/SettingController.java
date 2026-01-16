@@ -49,11 +49,6 @@ public class SettingController {
         return ResponseEntity.ok(settingService.getAllPredefinedSettings());
     }
 
-    @PostMapping("/addPredefined/{id}")
-    public ResponseEntity<Void> addPredefinedSetting(@PathVariable Integer id) {
-
-    }
-
     @GetMapping("/setting/{id}")
     public ResponseEntity<GetSettingDto> getSettingById(@PathVariable Integer id) {
         return ResponseEntity.ok(settingService.getSetting(id));

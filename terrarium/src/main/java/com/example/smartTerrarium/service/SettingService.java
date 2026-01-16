@@ -135,7 +135,6 @@ public class SettingService {
                 .moisture(setting.getMoisture())
                 .build();
     }
-    public void
     public void save(Setting setting) {
         settingRepository.save(setting);
     }

@@ -3,7 +3,6 @@ package com.example.smartTerrarium.dto;
 import lombok.*;
 
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
