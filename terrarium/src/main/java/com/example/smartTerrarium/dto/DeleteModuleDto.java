@@ -1,7 +1,6 @@
 package com.example.smartTerrarium.dto;
 
 import lombok.*;
-import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @NoArgsConstructor
