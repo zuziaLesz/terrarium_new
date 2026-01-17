@@ -52,12 +52,10 @@ public class TerrariumStateService {
 
             // Build indexes (last 24 hours)
             List<String> indexes = new ArrayList<>();
-            for (int i = 24; i > 0; i--) {
+            for (int i = 0; i <=23; i++) {
                 LocalDateTime time = currentHour.minusHours(i);
                 indexes.add(String.format("%02d:00", time.getHour()));
             }
-            indexes.add(String.format("%02d:00", now.getHour()));
-            historyDto.setIndexes(indexes);
 
             // Prepare series
             Map<String, List<Double>> series = new HashMap<>();
@@ -97,6 +95,12 @@ public class TerrariumStateService {
                 series.get("moisture").add(lastMoist);
                 series.get("brightness").add(lastBright);
             }
+            Collections.reverse(indexes);
+
+            Collections.reverse(series.get("temperature"));
+            Collections.reverse(series.get("moisture"));
+            Collections.reverse(series.get("brightness"));
+            historyDto.setIndexes(indexes);
             historyDto.setSeries(series);
         }
         else if(timeframe.equalsIgnoreCase("week")) {
@@ -105,8 +109,7 @@ public class TerrariumStateService {
             LocalDateTime currentDay = historyDto.getRange().getStartTime();
             LocalDateTime currentTimeFrom = currentDay.minusDays(7);
             List<String> indexes = new ArrayList<>();
-            indexes.add(currentDay.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
-            for (int i = 0; i < 7; i++) {
+            for (int i = 6; i >= 0; i--) {
                 LocalDateTime time = currentDay.minusDays(i);
                 indexes.add(time.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
             }
