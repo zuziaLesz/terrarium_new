@@ -15,4 +15,7 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
     Optional<List<Module>> findModulesByUser(@Param("userId") int userId);
 
     Optional<Module> findFirstByGroupId(String groupId);
+
+    List<Module> getAllByGroupId(String groupId);
+
 }
