@@ -1,6 +1,5 @@
 package com.example.smartTerrarium.dto;
 
-import com.sun.jna.platform.win32.Sspi;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -56,10 +56,6 @@ public class TerrariumDataService {
         Module module = moduleRepository.findFirstByGroupId(groupId).orElseThrow();
         return module.getUserId();
     }
-    private List<String> mapWteringDaysToList(String days) {
-        return Arrays.stream(days.split(","))
-                .collect(Collectors.toList());
-    }
     private String mapWaterLevel(String waterMin, String waterMax) {
         if(waterMin.equals("ok") || waterMax.equals("ok")) {
             return "ok";
