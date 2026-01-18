@@ -30,9 +30,5 @@ public class Module {
     private String groupId;
     @Column(name = "last_edit_date")
     private LocalDateTime lastEditDate;
-    @Column(name="water_min")
-    private String waterMin;
-    @Column(name="water_max")
-    private String waterMax;
     private Double intensity;
 }
