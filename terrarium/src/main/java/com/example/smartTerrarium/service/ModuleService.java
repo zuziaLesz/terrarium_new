@@ -45,13 +45,11 @@ public class ModuleService {
                 .deviceName(dto.getDevice_name())
                 .type(dto.getType())
                 .userId(dto.getUser_id())
-                .status(dto.getStatus())
+                .status(dto.getState())
                 .mode(dto.getMode())
                 .groupId(dto.getGroup_id())
                 .lastEditDate(LocalDateTime.parse(dto.getLast_edit_date(), fmt))
                 .isRegistered(dto.getIs_registered())
-                .waterMin(dto.getWater_min())
-                .waterMax(dto.getWater_max())
                 .intensity(dto.getIntensity())
                 .build();
     }
