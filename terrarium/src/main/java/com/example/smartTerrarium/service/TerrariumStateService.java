@@ -66,13 +66,13 @@ public class TerrariumStateService {
             // Most recent per hour
             Map<Integer, TerrariumData> mostRecentPerHour = new HashMap<>();
             List<TerrariumData> terrariumDataList =
-                    terrariumDataRepository.findAllByPlantIdAndLastUpdateAfter(plantId, currentTimeFrom)
+                    terrariumDataRepository.findAllByPlantIdAndTimestampAfter(plantId, currentTimeFrom)
                             .orElseThrow(NoTerrariumStateException::new);
 
             for (TerrariumData data : terrariumDataList) {
-                int hour = data.getLastUpdate().getHour();
+                int hour = data.getTimestamp().getHour();
                 if (!mostRecentPerHour.containsKey(hour) ||
-                        data.getLastUpdate().isAfter(mostRecentPerHour.get(hour).getLastUpdate())) {
+                        data.getTimestamp().isAfter(mostRecentPerHour.get(hour).getTimestamp())) {
                     mostRecentPerHour.put(hour, data);
                 }
             }
@@ -119,12 +119,12 @@ public class TerrariumStateService {
             series.put("moisture", new ArrayList<>());
             series.put("brightness", new ArrayList<>());
             Map<Integer, TerrariumData> mostRecentPerDay = new HashMap<>();
-            List<TerrariumData> terrariumDataList = terrariumDataRepository.findAllByPlantIdAndLastUpdateAfter(plantId, currentTimeFrom).orElseThrow(NoTerrariumStateException::new);
+            List<TerrariumData> terrariumDataList = terrariumDataRepository.findAllByPlantIdAndTimestampAfter(plantId, currentTimeFrom).orElseThrow(NoTerrariumStateException::new);
             for (TerrariumData data : terrariumDataList) {
-                int day = data.getLastUpdate().getDayOfWeek().getValue();
+                int day = data.getTimestamp().getDayOfWeek().getValue();
 
                 if (!mostRecentPerDay.containsKey(day) ||
-                        data.getLastUpdate().isAfter(mostRecentPerDay.get(day).getLastUpdate())) {
+                        data.getTimestamp().isAfter(mostRecentPerDay.get(day).getTimestamp())) {
 
                     mostRecentPerDay.put(day, data);
                 }
@@ -176,13 +176,13 @@ public class TerrariumStateService {
 
             Map<Integer, TerrariumData> mostRecentPerDay = new HashMap<>();
             List<TerrariumData> terrariumDataMonth =
-                    terrariumDataRepository.findAllByPlantIdAndLastUpdateAfter(plantId, currentTimeFromMonth)
+                    terrariumDataRepository.findAllByPlantIdAndTimestampAfter(plantId, currentTimeFromMonth)
                             .orElseThrow(NoTerrariumStateException::new);
 
             for (TerrariumData data : terrariumDataMonth) {
-                int dayOfMonth = data.getLastUpdate().getDayOfMonth();
+                int dayOfMonth = data.getTimestamp().getDayOfMonth();
                 if (!mostRecentPerDay.containsKey(dayOfMonth) ||
-                        data.getLastUpdate().isAfter(mostRecentPerDay.get(dayOfMonth).getLastUpdate())) {
+                        data.getTimestamp().isAfter(mostRecentPerDay.get(dayOfMonth).getTimestamp())) {
                     mostRecentPerDay.put(dayOfMonth, data);
                 }
             }
@@ -255,6 +255,7 @@ public class TerrariumStateService {
                 .temperature(terrariumData.getTemperature())
                 .humidity(terrariumData.getMoisture())
                 .brightness(terrariumData.getBrightness())
+                .water_level(terrariumData.getWaterLevel())
                 .name(currentSetting.getName())
                 .description(currentSetting.getDescription())
                 .lightStart(currentSetting.getLightStart())
@@ -287,7 +288,6 @@ public class TerrariumStateService {
             LocalDateTime candidate =
                     targetDate.atTime(hour, minute);
 
-            // Same day but time already passed → next week
             if (candidate.isBefore(now)) {
                 candidate = candidate.plusWeeks(1);
             }
@@ -297,7 +297,6 @@ public class TerrariumStateService {
             }
         }
 
-        // Convert to Timestamp (absolute moment)
         return Timestamp.valueOf(nextWatering);
     }
 }

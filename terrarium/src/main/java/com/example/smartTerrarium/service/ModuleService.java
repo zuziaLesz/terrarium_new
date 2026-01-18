@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,29 +23,36 @@ public class ModuleService {
     private final ModuleRepository moduleRepository;
     private final UserService userService;
     private final WebClient webClient;
-    public void add(CreateModuleDto createModuleDto) {
-        moduleRepository.save(mapDtoToModule(createModuleDto));
+    public void add(List<CreateModuleDto> createModules) {
+        List<Module> modules = createModules.stream()
+                .map(this::mapDtoToModule)
+                .collect(Collectors.toList());
+
+        moduleRepository.saveAll(modules);
     }
     public List<Module> getAllModules() {
         return moduleRepository.findModulesByUser(userService.getCurrentUser().getId()).orElse(List.of());
     }
     private Module mapDtoToModule(CreateModuleDto dto) {
 
-        if (Boolean.FALSE.equals(dto.getIsRegistered()) || dto.getUserId() == null) {
+        if (Boolean.FALSE.equals(dto.getIs_registered()) || dto.getUser_id() == null) {
             throw new ModuleException("Module is not registered!");
         }
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         return Module.builder()
-                .deviceName(dto.getDeviceName())
+                .deviceName(dto.getDevice_name())
                 .type(dto.getType())
-                .userId(dto.getUserId())
+                .userId(dto.getUser_id())
                 .status(dto.getStatus())
                 .mode(dto.getMode())
-                .groupId(dto.getGroupId())
-                .lastEditDate(LocalDateTime.parse(dto.getLastEditDate(), fmt))
-                .isRegistered(dto.getIsRegistered())
+                .groupId(dto.getGroup_id())
+                .lastEditDate(LocalDateTime.parse(dto.getLast_edit_date(), fmt))
+                .isRegistered(dto.getIs_registered())
+                .waterMin(dto.getWater_min())
+                .waterMax(dto.getWater_max())
+                .intensity(dto.getIntensity())
                 .build();
     }
     public void delete(String groupId) {

@@ -19,7 +19,7 @@ public class TerrariumData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "last_update")
-    private LocalDateTime lastUpdate;
+    private LocalDateTime timestamp;
     private double temperature;
     private double moisture;
     private double brightness;
@@ -27,4 +27,5 @@ public class TerrariumData {
     private Integer userId;
     @Column(name="plant_id")
     private Integer plantId;
+    private String waterLevel;
 }

@@ -10,12 +10,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 public class CreateModuleDto {
-    private String deviceName;
+    private String device_name;
     private String type;
-    private Integer userId;
-    private String groupId;
+    private Integer user_id;
+    private String group_id;
     private String status;
     private String mode;
-    private String lastEditDate;
-    private Boolean isRegistered;
+    private String last_edit_date;
+    private Boolean is_registered;
+    private String water_min;
+    private String water_max;
+    private Double intensity;
 }

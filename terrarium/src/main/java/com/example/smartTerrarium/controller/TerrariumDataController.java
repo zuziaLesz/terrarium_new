@@ -30,7 +30,7 @@ public class TerrariumDataController {
         return ResponseEntity.ok(terrariumDataService.saveTerrariumData(terrariumDataDto, setting, groupId));
     }
     @PostMapping("/module")
-    public ResponseEntity<Void> addModule(@RequestBody CreateModuleDto createModuleDto) {
+    public ResponseEntity<Void> addModule(@RequestBody List<CreateModuleDto> createModuleDto) {
         moduleService.add(createModuleDto);
         return ResponseEntity.ok().build();
     }

@@ -14,6 +14,7 @@ public class DashboardDto {
     private Double temperature;
     private Double humidity;
     private Double brightness;
+    private String water_level;
     private LocalTime lightStart;
     private LocalTime lightEnd;
     private Timestamp timeUntilWatering;

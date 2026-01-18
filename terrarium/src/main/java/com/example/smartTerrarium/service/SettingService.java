@@ -79,7 +79,7 @@ public class SettingService {
         if(createSettingDto.getWateringDays() != null && !createSettingDto.getWateringDays().isEmpty()) {
             setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
         }
-        sendTerariumData(mapSettingToTerrariumDataSend(setting));
+        sendTerrariumData(mapSettingToTerrariumDataSend(setting));
         settingRepository.save(setting);
     }
 
@@ -129,7 +129,7 @@ public class SettingService {
     public TerrariumDataDto applySetting(Integer id) {
         changeCurrentSetting(id);
         Setting setting = getCurrentSetting();
-        sendTerariumData(mapSettingToTerrariumDataSend(setting));
+        sendTerrariumData(mapSettingToTerrariumDataSend(setting));
         return TerrariumDataDto.builder()
                 .temperature(setting.getTemperature())
                 .moisture(setting.getMoisture())
@@ -160,7 +160,7 @@ public class SettingService {
                 .build();
     }
 
-    public void sendTerariumData(TerrariumDataSendDto data) {
+    public void sendTerrariumData(TerrariumDataSendDto data) {
         webClient.post()
                 .uri("https://api.leafcore.eu/external/settings")
                 .contentType(MediaType.APPLICATION_JSON)

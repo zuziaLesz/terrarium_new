@@ -38,9 +38,10 @@ public class TerrariumDataService {
                         .temperature(dto.getTemperature())
                         .moisture(dto.getMoisture())
                         .brightness(dto.getBrightness())
-                        .lastUpdate(dto.getTimestamp())
+                        .timestamp(dto.getTimestamp())
                         .userId(findUserByGroupId(groupId))
                         .plantId(setting.getId())
+                        .waterLevel(mapWaterLevel(dto.getWater_min(), dto.getWater_max()))
                         .build()
                 )
                 .toList();
@@ -58,6 +59,18 @@ public class TerrariumDataService {
     private List<String> mapWteringDaysToList(String days) {
         return Arrays.stream(days.split(","))
                 .collect(Collectors.toList());
+    }
+    private String mapWaterLevel(String waterMin, String waterMax) {
+        if(waterMin.equals("ok") || waterMax.equals("ok")) {
+            return "ok";
+        }
+        else if(waterMin.equals("low")) {
+            return "low";
+        }
+        else if(waterMax.equals("high")) {
+            return "high";
+        }
+        else return null;
     }
     public void mapTerrariumSendDataToSettingAndSave(TerrariumDataSendDto dto, String groupId) {
         Setting setting = getCurrentSettingByGroupId(groupId);
