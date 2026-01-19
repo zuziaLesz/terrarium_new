@@ -48,7 +48,9 @@ public class TerrariumDataService {
     }
     public Setting getCurrentSettingByGroupId(String groupId) {
         Integer userId = findUserByGroupId(groupId);
-        return settingService.getCurrentSettingByUserId(userId);
+        Setting setting = settingService.getCurrentSettingByUserId(userId);
+        System.out.println(setting.getId());
+        return setting;
     }
     private Integer findUserByGroupId(String groupId) {
         Module module = moduleRepository.findFirstByGroupId(groupId).orElseThrow();
@@ -67,7 +69,7 @@ public class TerrariumDataService {
         else return null;
     }
     public void mapTerrariumSendDataToSettingAndSave(TerrariumDataSendDto dto, String groupId) {
-        Setting setting = getCurrentSettingByGroupId(groupId);
+        Setting setting = settingService.getSettingById(Integer.parseInt(dto.getSetting_id()));
         if (dto.getPlant_name() != null) {
             setting.setName(dto.getPlant_name());
         }
@@ -99,6 +101,7 @@ public class TerrariumDataService {
             setting.setWateringDays(settingService.mapWateringDaysToString(dto.getDayOfWeek()));
         }
         setting.setLastUpdated(new Date());
+        System.out.println(setting.getId());
         settingService.save(setting);
     }
 }
