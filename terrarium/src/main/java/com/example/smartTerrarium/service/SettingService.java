@@ -42,6 +42,13 @@ public class SettingService {
         settingRepository.save(setting);
     }
 
+    public void unApplySetting(int settingId) {
+        Setting setting = settingRepository.findById(settingId).orElse(null);
+        if(setting != null && setting.isCurrentlyUsed()) {
+            setting.setCurrentlyUsed(false);
+        }
+    }
+
     public void editSetting(Integer id, CreateSettingDto createSettingDto) {
         Setting setting = getSettingById(id);
         if(!setting.isCustom()) {

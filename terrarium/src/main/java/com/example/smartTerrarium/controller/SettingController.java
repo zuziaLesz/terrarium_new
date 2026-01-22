@@ -39,6 +39,12 @@ public class SettingController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/setting/changeCurrent/{id}")
+    public ResponseEntity<Void> unApplySetting(@PathVariable Integer id) {
+        settingService.unApplySetting(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/setting")
     public ResponseEntity<List<GetSettingDto>>getAllSettings() {
         return ResponseEntity.ok(settingService.getAllSettings());

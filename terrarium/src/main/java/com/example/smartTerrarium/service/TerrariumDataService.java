@@ -67,6 +67,8 @@ public class TerrariumDataService {
     }
     private Integer findUserByGroupId(String groupId) {
         Module module = moduleRepository.findFirstByGroupId(groupId).orElseThrow();
+        System.out.println(module.getId());
+        System.out.println(module.getUserId());
         return module.getUserId();
     }
     private String mapWaterLevel(String waterMin, String waterMax) {

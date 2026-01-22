@@ -14,7 +14,8 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
     @Query(value = "SELECT * FROM module WHERE user_id = :userId ", nativeQuery = true)
     Optional<List<Module>> findModulesByUser(@Param("userId") int userId);
 
-    Optional<Module> findFirstByGroupId(String groupId);
+    @Query(value = "SELECT * FROM module WHERE group_id = :groupId LIMIT 1", nativeQuery = true)
+    Optional<Module> findFirstByGroupId(@Param("groupId") String groupId);
 
     List<Module> getAllByGroupId(String groupId);
 
