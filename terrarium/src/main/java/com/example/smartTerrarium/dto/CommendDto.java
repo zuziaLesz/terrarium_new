@@ -11,6 +11,6 @@ import lombok.Setter;
 @Getter
 public class CommendDto {
     private String component;
-    private String action;
+    private String state;
     private String intensity;
 }

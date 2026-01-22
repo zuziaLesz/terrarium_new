@@ -8,8 +8,5 @@ import lombok.*;
 @Builder
 @Getter
 public class DeleteModuleDto {
-    private String device_name;
-    private String user_id;
-    private boolean is_registered;
-
+    private String groupId;
 }

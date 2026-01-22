@@ -56,17 +56,16 @@ public class ModuleService {
     public void delete(String groupId) {
         List<Module> modules = moduleRepository.getAllByGroupId(groupId);
         DeleteModuleDto deleteModuleDto = DeleteModuleDto.builder()
-                .device_name(groupId)
-                .user_id(null)
-                .is_registered(false)
+                .groupId(groupId)
                 .build();
         sendDeleteMessage(deleteModuleDto);
         moduleRepository.deleteAll(modules);
     }
+    //groupId - nic nie wysylane - wysylac tylko group id
     public void sendDeleteMessage(DeleteModuleDto deleteModuleDto) {
         System.out.println("deleteing Module");
         webClient.post()
-                .uri("https://leafcore.eu/api/external/devices/register")
+                .uri("https://api.leafcore.eu/api/external/devices/unregistered/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(deleteModuleDto)
                 .retrieve()

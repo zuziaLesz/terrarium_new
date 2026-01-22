@@ -45,8 +45,4 @@ public class UserController {
     public ResponseEntity<NewUserDataDto> editUser(@RequestBody UserEditDto userDto, @PathVariable Integer id) {
         return ResponseEntity.ok(userService.editUser(userDto, id));
     }
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
 }

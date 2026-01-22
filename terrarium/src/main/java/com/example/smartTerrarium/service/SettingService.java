@@ -79,7 +79,9 @@ public class SettingService {
         if(createSettingDto.getWateringDays() != null && !createSettingDto.getWateringDays().isEmpty()) {
             setting.setWateringDays(mapWateringDaysToString(createSettingDto.getWateringDays()));
         }
-        sendTerrariumData(mapSettingToTerrariumDataSend(setting));
+        if(setting.isCustom()) {
+            sendTerrariumData(mapSettingToTerrariumDataSend(setting));
+        }
         settingRepository.save(setting);
     }
 
@@ -132,7 +134,7 @@ public class SettingService {
         sendTerrariumData(mapSettingToTerrariumDataSend(setting));
         return TerrariumDataDto.builder()
                 .temperature(setting.getTemperature())
-                .moisture(setting.getMoisture())
+                .humidity(setting.getMoisture())
                 .build();
     }
     public void addPredefined(Integer id) {

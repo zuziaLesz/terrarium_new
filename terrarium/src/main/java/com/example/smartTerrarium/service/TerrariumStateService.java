@@ -222,7 +222,7 @@ public class TerrariumStateService {
         else if(setting.getWateringMethod().equalsIgnoreCase("standard")) {
             dto.setComponent("pump");
         }
-        dto.setAction("on");
+        dto.setState("on");
         webClient.post()
                 .uri("https://api.leafcore.eu/external/watering")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -233,12 +233,15 @@ public class TerrariumStateService {
     }
 
     public void lightPlant(Double brightness) {
+        Setting setting = settingService.getCurrentSetting();
+        setting.setLightVolume(brightness);
+        settingService.save(setting);
         CommendDto dto = new CommendDto();
         dto.setComponent("light");
         if(brightness == 0) {
-            dto.setAction("off");
+            dto.setState("off");
         }
-        else dto.setAction("on");
+        else dto.setState("on");
         dto.setIntensity(brightness.toString());
         webClient.post()
                 .uri("https://api.leafcore.eu/external/light")

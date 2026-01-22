@@ -32,20 +32,33 @@ public class TerrariumDataService {
     }
     public List<TerrariumData> saveTerrariumData (List<TerrariumDataDto> terrariumDataDto, Setting setting, String groupId) {
         List<TerrariumData> terrariumDataList = terrariumDataDto.stream()
-                .map(dto -> TerrariumData.builder()
-                        .temperature(dto.getTemperature())
-                        .moisture(dto.getMoisture())
-                        .brightness(dto.getBrightness())
-                        .timestamp(dto.getTimestamp())
-                        .userId(findUserByGroupId(groupId))
-                        .plantId(setting.getId())
-                        .waterLevel(mapWaterLevel(dto.getWater_min(), dto.getWater_max()))
-                        .build()
-                )
+                .map(dto -> mapTerrariumDataDto(dto, setting))
                 .toList();
-
         return terrariumDataRepository.saveAll(terrariumDataList);
     }
+
+    private TerrariumData mapTerrariumDataDto (TerrariumDataDto dto, Setting setting) {
+        TerrariumData terrariumData = new TerrariumData();
+        if(dto.getTemperature() != null) {
+            terrariumData.setTemperature(dto.getTemperature());
+        }
+        if(dto.getHumidity() != null) {
+            terrariumData.setMoisture(dto.getHumidity());
+        }
+        if(dto.getBrightness() != null) {
+            terrariumData.setBrightness(dto.getBrightness());
+        }
+        if(dto.getTimestamp() != null) {
+            terrariumData.setTimestamp(dto.getTimestamp());
+        }
+        if(dto.getWater_min() != null && dto.getWater_max() != null) {
+            terrariumData.setWaterLevel(mapWaterLevel(dto.getWater_min(), dto.getWater_max()));
+        }
+        terrariumData.setUserId(setting.getUserId());
+        terrariumData.setPlantId(setting.getId());
+        return terrariumData;
+    }
+
     public Setting getCurrentSettingByGroupId(String groupId) {
         Integer userId = findUserByGroupId(groupId);
         Setting setting = settingService.getCurrentSettingByUserId(userId);
@@ -66,7 +79,7 @@ public class TerrariumDataService {
         else if(waterMax.equals("high")) {
             return "high";
         }
-        else return null;
+        else return "";
     }
     public void mapTerrariumSendDataToSettingAndSave(TerrariumDataSendDto dto, String groupId) {
         Setting setting = settingService.getSettingById(Integer.parseInt(dto.getSetting_id()));
