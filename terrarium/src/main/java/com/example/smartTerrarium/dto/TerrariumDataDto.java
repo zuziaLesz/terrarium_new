@@ -15,7 +15,6 @@ public class TerrariumDataDto {
     private Double temperature;
     private Double humidity;
     private Double brightness;
-    private String water_min;
-    private String water_max;
+    private String water_level;
     private LocalDateTime timestamp;
 }

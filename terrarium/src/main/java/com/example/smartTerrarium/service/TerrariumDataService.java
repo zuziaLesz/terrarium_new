@@ -51,8 +51,8 @@ public class TerrariumDataService {
         if(dto.getTimestamp() != null) {
             terrariumData.setTimestamp(dto.getTimestamp());
         }
-        if(dto.getWater_min() != null && dto.getWater_max() != null) {
-            terrariumData.setWaterLevel(mapWaterLevel(dto.getWater_min(), dto.getWater_max()));
+        if(dto.getWater_level() != null) {
+            terrariumData.setWaterLevel(dto.getWater_level());
         }
         terrariumData.setUserId(setting.getUserId());
         terrariumData.setPlantId(setting.getId());
@@ -70,18 +70,6 @@ public class TerrariumDataService {
         System.out.println(module.getId());
         System.out.println(module.getUserId());
         return module.getUserId();
-    }
-    private String mapWaterLevel(String waterMin, String waterMax) {
-        if(waterMin.equals("ok") && waterMax.equals("ok")) {
-            return "ok";
-        }
-        else if(waterMin.equals("low")) {
-            return "low";
-        }
-        else if(waterMax.equals("high")) {
-            return "high";
-        }
-        else return "";
     }
     public void mapTerrariumSendDataToSettingAndSave(TerrariumDataSendDto dto, String groupId) {
         Setting setting = settingService.getSettingById(Integer.parseInt(dto.getSetting_id()));
