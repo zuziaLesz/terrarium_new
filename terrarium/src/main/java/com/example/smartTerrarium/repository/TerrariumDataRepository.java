@@ -15,5 +15,6 @@ public interface TerrariumDataRepository extends JpaRepository<TerrariumData, In
     @Query(value = "SELECT * FROM terrarium_data  WHERE user_id = :userId ORDER BY last_update DESC LIMIT 1", nativeQuery = true)
     Optional<TerrariumData> findMostRecent(@Param("userId") Integer userId);
 
-    Optional<List<TerrariumData>> findAllByPlantIdAndTimestampAfter(Integer plantId, LocalDateTime timestampAfter);
+    @Query(value = "SELECT * FROM terrarium_data WHERE plant_id = :plantId AND last_update > :timestampAfter", nativeQuery = true)
+    Optional<List<TerrariumData>> findAllByPlantIdAndTimestampAfter(@Param("plantId") Integer plantId,@Param("timestampAfter") LocalDateTime timestampAfter);
 }

@@ -72,7 +72,7 @@ public class TerrariumDataService {
         return module.getUserId();
     }
     private String mapWaterLevel(String waterMin, String waterMax) {
-        if(waterMin.equals("ok") || waterMax.equals("ok")) {
+        if(waterMin.equals("ok") && waterMax.equals("ok")) {
             return "ok";
         }
         else if(waterMin.equals("low")) {
