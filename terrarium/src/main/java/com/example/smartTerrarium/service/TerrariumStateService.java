@@ -277,7 +277,7 @@ public class TerrariumStateService {
                 .map(String::toUpperCase)
                 .map(DayOfWeek::valueOf)
                 .toList();
-        int hour = 6;
+        int hour = 12;
         int minute = 0;
 
         LocalDateTime nextWatering = null;
