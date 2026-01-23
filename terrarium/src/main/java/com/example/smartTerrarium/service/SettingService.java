@@ -275,6 +275,8 @@ public class SettingService {
                 .lightStop(setting.getLight_end())
                 .wateringMethod(setting.getWatering_method())
                 .lightVolume(setting.getLight_volume())
+                .waterOverWeek(setting.getWater_amount())
+                .image(setting.getImage())
                 .build();
         dto.setWateringDays(mapWateringDaysToList(setting.getWatering_days()));
         return dto;
