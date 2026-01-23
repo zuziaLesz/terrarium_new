@@ -46,6 +46,7 @@ public class SettingService {
         Setting setting = settingRepository.findById(settingId).orElse(null);
         if(setting != null && setting.isCurrentlyUsed()) {
             setting.setCurrentlyUsed(false);
+            settingRepository.save(setting);
         }
     }
 

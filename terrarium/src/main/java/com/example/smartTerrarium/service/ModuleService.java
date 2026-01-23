@@ -65,7 +65,7 @@ public class ModuleService {
     public void sendDeleteMessage(DeleteModuleDto deleteModuleDto) {
         System.out.println("deleteing Module");
         webClient.post()
-                .uri("https://api.leafcore.eu/api/external/devices/unregistered")
+                .uri("https://api.leafcore.eu/external/devices/unregistered")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(deleteModuleDto)
                 .retrieve()
