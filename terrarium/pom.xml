@@ -18,7 +18,6 @@
 	</properties>
 
 	<dependencies>
-		<!-- Spring Boot Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -53,7 +52,6 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- BCrypt do haszowania -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
@@ -63,12 +61,6 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-<!--		&lt;!&ndash; MySQL Driver &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>mysql</groupId>-->
-<!--			<artifactId>mysql-connector-java</artifactId>-->
-<!--			<version>8.0.23</version> &lt;!&ndash; Ensure compatibility with MySQL 8.0.23 &ndash;&gt;-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
@@ -89,7 +81,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>6.2.10.Final</version> <!-- Use a version compatible with Java 21 -->
+			<version>6.2.10.Final</version>
 		</dependency>
 
 		<!-- Lombok -->
