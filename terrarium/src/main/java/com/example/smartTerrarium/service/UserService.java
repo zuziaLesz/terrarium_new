@@ -55,9 +55,6 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() ->new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
     }
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
     public User getCurrentUser() {
         return (User) SecurityContextHolder
                 .getContext()
