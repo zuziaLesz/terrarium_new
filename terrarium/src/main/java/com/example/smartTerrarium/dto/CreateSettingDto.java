@@ -10,7 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class CreateSettingDto {
     private String name;
     private String description;

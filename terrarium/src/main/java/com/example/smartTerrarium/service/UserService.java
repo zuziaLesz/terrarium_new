@@ -37,10 +37,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    /**
-     * Authenticate user and return a JWT token if credentials are valid.
-     * @return JWT token string
-     */
     public UserSendData login(UserLoginData loginData) {
         User user = getUserByEmail(loginData.getEmail());
         if(passwordEncoder.matches(loginData.getPassword(), user.getPassword())) {

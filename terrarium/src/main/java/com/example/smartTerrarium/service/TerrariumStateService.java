@@ -50,20 +50,17 @@ public class TerrariumStateService {
             LocalDateTime currentHour = now;
             LocalDateTime currentTimeFrom = now.minusHours(24);
 
-            // Build indexes (last 24 hours)
             List<String> indexes = new ArrayList<>();
             for (int i = 0; i <=23; i++) {
                 LocalDateTime time = currentHour.minusHours(i);
                 indexes.add(String.format("%02d:00", time.getHour()));
             }
 
-            // Prepare series
             Map<String, List<Double>> series = new HashMap<>();
             series.put("temperature", new ArrayList<>());
             series.put("moisture", new ArrayList<>());
             series.put("brightness", new ArrayList<>());
 
-            // Most recent per hour
             Map<Integer, TerrariumData> mostRecentPerHour = new HashMap<>();
             List<TerrariumData> terrariumDataList =
                     terrariumDataRepository.findAllByPlantIdAndTimestampAfter(plantId, currentTimeFrom)
@@ -80,7 +77,6 @@ public class TerrariumStateService {
             Double lastMoist = null;
             Double lastBright = null;
 
-            // Fill series
             for (String label : indexes) {
                 int hour = Integer.parseInt(label.split(":")[0]);
                 TerrariumData data = mostRecentPerHour.get(hour);
